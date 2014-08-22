@@ -4,6 +4,30 @@ var Colr = function () {
   this.b = 0;
 };
 
+Colr.fromHex = function (hex) {
+  var colr = new Colr();
+  colr.fromHex(hex);
+  return colr;
+};
+
+Colr.fromRgb = function (r, g, b) {
+  var colr = new Colr();
+  colr.fromRgb(r, g, b);
+  return colr;
+};
+
+Colr.fromRgbArray = function (arr) {
+  var colr = new Colr();
+  colr.fromRgbArray(arr);
+  return colr;
+};
+
+Colr.fromRgbObject = function (obj) {
+  var colr = new Colr();
+  colr.fromRgbObject(obj);
+  return colr;
+};
+
 Colr.prototype.fromHex = function (hex) {
   if (typeof hex !== 'string') {
     throw new Error('colr.fromHex: requires string');
