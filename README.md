@@ -23,6 +23,9 @@ var colr = Colr.fromRgbObject({r:20, g:30, b:40});
 var colr = Colr.fromHsl(320, 20, 90);
 var colr = Colr.fromHslArray([320, 20, 90]);
 var colr = Colr.fromHslObject({h:320, s:20, l:90});
+
+// create from grayscale
+var colr = Colr.fromGrayscale(128);
 ```
 
 ### Conversions
@@ -37,14 +40,14 @@ colr.toRgbObject(); // {r:0, g:0, b:0}
 
 colr.toHslArray(); // [0, 0, 0]
 colr.toHslObject(); // {h:0, s:0, l:0}
+
+colr.toGrayscale(); // 0
 ```
 
 ### Analysis
 
 ```javascript
 var colr = new Colr();
-
-colr.toGrayscale(); // 0 - 255
 
 // n = 0 - 100
 colr.lighten(n);

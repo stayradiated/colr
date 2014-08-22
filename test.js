@@ -9,6 +9,13 @@ describe('Colr', function () {
     return colr.r === arr[0] && colr.g === arr[1] && colr.b === arr[2];
   };
 
+
+  /*
+   * IMPORTERS
+   */
+
+  // HEX
+
   it('should parse hex strings', function () {
     var tests = {
       '#012345': [1, 35, 69],
@@ -35,6 +42,8 @@ describe('Colr', function () {
       });
     });
   });
+
+  // RGB
 
   it('should import r, g, b as arguments, arrays and objects', function () {
     var tests = [
@@ -74,21 +83,61 @@ describe('Colr', function () {
     });
   });
 
+  // GRAYSCALE
+  
+  it('should convert from grayscale', function () {
+    var tests =[
+      [0, [0, 0, 0], 0],
+      [-1, [0, 0, 0], 0],
+      [30, [30, 30, 30], 30],
+      [255, [255, 255, 255], 255],
+      [128, [128, 128, 128], 128],
+    ];
+
+    tests.forEach(function (test) {
+      var input = test[0];
+      var expectedRgb = test[1];
+      var expectedVal = test[2];
+
+      colr = Colr.fromGrayscale(input);
+      assert(equal(expectedRgb));
+      assert.equal(colr.toGrayscale(), expectedVal);
+    });
+  });
+
+  // HSL
+
   it('should convert from hsl', function () {
     var tests = [
       [[0, 0, 0], [0, 0, 0]],
       [[0, 0, 100], [255, 255, 255]],
       [[20, 30, 40], [133, 92, 71]],
+      [[-100, 2000, 50], [255, 0, 0]],
+      [[0, 100, 50], [255, 0, 0]],
+      [[0.1, 0.2, 0.3], [1, 1, 1]],
     ];
 
     tests.forEach(function (test) {
       var input = test[0];
       var expected = test[1];
 
+      colr = Colr.fromHsl.apply(null, input);
+      assert(equal(expected));
+
       colr = Colr.fromHslArray(input);
+      assert(equal(expected));
+
+      colr = Colr.fromHslObject({ h: input[0], s: input[1], l: input[2] });
       assert(equal(expected));
     });
   });
+
+
+  /*
+   * EXPORTERS
+   */
+
+  // HEX
 
   it('should output as a hex string', function () {
     var tests = {
@@ -104,6 +153,8 @@ describe('Colr', function () {
       assert.equal(colr.toHex(), tests[key]);
     }
   });
+
+  // RGB
 
   it('should output as an rgb array', function () {
     var tests = [
@@ -135,6 +186,9 @@ describe('Colr', function () {
     });
   });
 
+
+  // GRAYSCALE
+
   it('should convert to grayscale', function () {
     var tests = {
       '#FFFFFF': 255,
@@ -149,6 +203,9 @@ describe('Colr', function () {
     }
   });
 
+
+  // HSL
+
   it('should convert to hsl', function () {
     var tests = {
       '#000000': [0, 0, 0],
@@ -161,6 +218,11 @@ describe('Colr', function () {
       assert.deepEqual(colr.toHslArray(), tests[key]);
     }
   });
+
+
+  /*
+   * MODIFIERS
+   */
 
   it('should lighten the color', function () {
     var tests = {

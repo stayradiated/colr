@@ -1,6 +1,6 @@
 {
   "name": "colr",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple color conversion library that promotes stability and simplicity",
   "main": "index.js",
   "scripts": {
