@@ -6,7 +6,7 @@ describe('Colr', function () {
   var colr;
 
   var equal = function (arr) {
-    return colr.r === arr[0] && colr.g === arr[1] && colr.b === arr[2];
+    assert.deepEqual([colr.r, colr.g, colr.b], arr);
   };
 
 
@@ -29,7 +29,7 @@ describe('Colr', function () {
 
     for (var key in tests) {
       colr = Colr.fromHex(key);
-      assert(equal(tests[key]));
+      equal(tests[key]);
     }
   });
 
@@ -58,13 +58,13 @@ describe('Colr', function () {
       var expected = test[1];
 
       colr = Colr.fromRgb.apply(null, input);
-      assert(equal(expected));
+      equal(expected);
 
       colr = Colr.fromRgbArray(input);
-      assert(equal(expected));
+      equal(expected);
 
       colr = Colr.fromRgbObject({ r: input[0], g: input[1], b: input[2] });
-      assert(equal(expected));
+      equal(expected);
     });
   });
 
@@ -100,7 +100,7 @@ describe('Colr', function () {
       var expectedVal = test[2];
 
       colr = Colr.fromGrayscale(input);
-      assert(equal(expectedRgb));
+      equal(expectedRgb);
       assert.equal(colr.toGrayscale(), expectedVal);
     });
   });
@@ -122,13 +122,40 @@ describe('Colr', function () {
       var expected = test[1];
 
       colr = Colr.fromHsl.apply(null, input);
-      assert(equal(expected));
+      equal(expected);
 
       colr = Colr.fromHslArray(input);
-      assert(equal(expected));
+      equal(expected);
 
       colr = Colr.fromHslObject({ h: input[0], s: input[1], l: input[2] });
-      assert(equal(expected));
+      equal(expected);
+    });
+  });
+
+  // HSV
+  
+  it('should convert from hsv', function () {
+    var tests = [
+      [[0, 0, 0], [0, 0, 0]],
+      [[0, 0, 100], [255, 255, 255]],
+      [[20, 30, 40], [102, 82, 71]],
+      [[-100, 2000, 50], [128, 0, 0]],
+      [[0, 100, 50], [128, 0, 0]],
+      [[1, 2, 3], [8, 7, 7]],
+    ];
+
+    tests.forEach(function (test) {
+      var input = test[0];
+      var expected = test[1];
+
+      colr = Colr.fromHsv.apply(null, input);
+      equal(expected);
+
+      colr = Colr.fromHsvArray(input);
+      equal(expected);
+
+      colr = Colr.fromHsvObject({ h: input[0], s: input[1], v: input[2] });
+      equal(expected);
     });
   });
 
@@ -167,7 +194,7 @@ describe('Colr', function () {
       var expected = test[1];
       
       colr = Colr.fromRgbArray(input);
-      assert(equal(expected));
+      equal(expected);
     });
   });
 
@@ -203,7 +230,6 @@ describe('Colr', function () {
     }
   });
 
-
   // HSL
 
   it('should convert to hsl', function () {
@@ -216,6 +242,21 @@ describe('Colr', function () {
     for (var key in tests) {
       colr = Colr.fromHex(key);
       assert.deepEqual(colr.toHslArray(), tests[key]);
+    }
+  });
+
+  // HSV 
+
+  it('should convert to hsv', function () {
+    var tests = {
+      '#000000': [0, 0, 0],
+      '#FFFFFF': [0, 0, 100],
+      '#bada55': [74.4360902255639,61.00917431192659,85.49019607843137],
+    };
+
+    for (var key in tests) {
+      colr = Colr.fromHex(key);
+      assert.deepEqual(colr.toHsvArray(), tests[key]);
     }
   });
 

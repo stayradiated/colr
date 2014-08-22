@@ -50,6 +50,11 @@ colr.fromHsl(320, 20, 90);
 colr.fromHslArray([320, 20, 90]);
 colr.fromHslObject({h:320, s:20, l:90});
 
+// import from hsv/hsb
+colr.fromHsv(30, 80, 20);
+colr.fromHsvArray([30, 80, 20]);
+colr.fromHsvObject({h:30, s:80, v:20});
+
 // create from grayscale
 colr.fromGrayscale(128);
 ```
@@ -68,6 +73,9 @@ colr.toRgbObject(); // {r:186, g:218, b:85}
 
 colr.toHslArray(); // [74.4360902255639, 64.25120772946859, 59.411764705882355]
 colr.toHslObject(); // {h:74.4360902255639, s:64.25120772946859, l:59.411764705882355}
+
+colr.toHsvArray(); // [74.4360902255639, 61.00917431192659, 85.49019607843137]
+colr.toHsvObject(); //{h: 74.4360902255639, s: 61.00917431192659, l: 85.49019607843137}
 
 colr.toGrayscale(); // 193.27
 ```

@@ -46,6 +46,18 @@
     return (new Colr()).fromHslObject(obj);
   };
 
+  Colr.fromHsv = function (h, s, v) {
+    return (new Colr()).fromHsv(h, s, v);
+  };
+
+  Colr.fromHsvArray = function (arr) {
+    return (new Colr()).fromHsvArray(arr);
+  };
+
+  Colr.fromHsvObject = function (obj) {
+    return (new Colr()).fromHsvObject(obj);
+  };
+
 
   /*
   * IMPORTERS
@@ -78,6 +90,19 @@
     return this;
   };
 
+  // GRAYSCALE
+  
+  Colr.prototype.fromGrayscale = function (value) {
+    if (typeof value != 'number') {
+      throw new Error('colr.fromGrayscale requires a number');
+    }
+    this.r = value;
+    this.g = value;
+    this.b = value;
+    this._sanitize();
+    return this;
+  };
+
   // RGB
 
   Colr.prototype.fromRgb = function (r, g, b) {
@@ -99,19 +124,6 @@
     return this.fromRgb(obj.r, obj.g, obj.b);
   };
 
-  // GRAYSCALE
-  
-  Colr.prototype.fromGrayscale = function (value) {
-    if (typeof value != 'number') {
-      throw new Error('colr.fromGrayscale requires a number');
-    }
-    this.r = value;
-    this.g = value;
-    this.b = value;
-    this._sanitize();
-    return this;
-  };
-
   // HSL
 
   Colr.prototype.fromHsl = function (h, s, l) {
@@ -128,15 +140,6 @@
 
     // following code is from tinycolor
     // github.com/bgrins/TinyColor
-
-    function hue2rgb(p, q, t) {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1/6) return p + (q - p) * 6 * t;
-        if (t < 1/2) return q;
-        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-        return p;
-    }
 
     if (s === 0) {
         r = g = b = l; // achromatic
@@ -163,6 +166,46 @@
     return this.fromHsl(obj.h, obj.s, obj.l);
   };
 
+  // HSV
+  
+  Colr.prototype.fromHsv = function (h, s, v) {
+    if (typeof h != 'number' || typeof s != 'number' || typeof v != 'number') {
+      throw new Error('colr.fromHsv requires three numbers');
+    }
+
+    // clamp values: 0-360 (hue) and 0-100 (saturation and value)
+    h = Math.max(0, Math.min(360, h)) / 360 * 6;
+    s = Math.max(0, Math.min(100, s)) / 100;
+    v = Math.max(0, Math.min(100, v)) / 100;
+
+    // following code is from tinycolor
+    // github.com/bgrins/TinyColor
+
+    var i = Math.floor(h);
+    var f = h - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+    var mod = i % 6;
+    var r = [v, q, p, p, t, v][mod];
+    var g = [t, v, v, q, p, p][mod];
+    var b = [p, p, t, v, v, q][mod];
+
+    this.r = r * 255;
+    this.g = g * 255;
+    this.b = b * 255;
+    this._sanitize();
+    return this;
+  };
+
+  Colr.prototype.fromHsvArray = function (arr) {
+    return this.fromHsv.apply(this, arr);
+  };
+
+  Colr.prototype.fromHsvObject = function (obj) {
+    return this.fromHsv(obj.h, obj.s, obj.v);
+  };
+
 
   /*
   * EXPORTERS
@@ -180,6 +223,12 @@
     return ('#' + r + g + b).toUpperCase();
   };
 
+  // GRAYSCALE
+
+  Colr.prototype.toGrayscale = function () {
+    return (this.r * 299 + this.g * 587 + this.b * 114) / 1000;
+  };
+
   // RGB
 
   Colr.prototype.toRgbArray = function () {
@@ -192,12 +241,6 @@
       g: this.g,
       b: this.b,
     };
-  };
-
-  // GRAYSCALE
-
-  Colr.prototype.toGrayscale = function () {
-    return (this.r * 299 + this.g * 587 + this.b * 114) / 1000;
   };
 
   // HSL
@@ -235,6 +278,43 @@
     return { h: hsl[0], s: hsl[1], l: hsl[2] };
   };
 
+  // HSV
+  
+  Colr.prototype.toHsvArray = function () {
+    var r = this.r / 255;
+    var g = this.g / 255;
+    var b = this.b / 255;
+
+    // following code is from tinycolor
+    // github.com/bgrins/TinyColor
+
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
+    var h, s, v = max;
+
+    var d = max - min;
+    s = max === 0 ? 0 : d / max;
+
+    if (max === min) {
+      h = 0; // achromatic
+    }
+    else {
+      switch(max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+
+    return [h * 360, s * 100, v * 100];
+  };
+
+  Colr.prototype.toHsvObject = function () {
+    var hsv = this.toHsvArray();
+    return { h: hsv[0], s: hsv[1], l: hsv[2] };
+  };
+
 
   /*
   * MODIFIERS
@@ -255,8 +335,8 @@
   };
 
   /*
-  * MISC
-  */
+   * MISC
+   */
 
   Colr.prototype.clone = function () {
     var colr = new Colr();
@@ -269,6 +349,19 @@
     this.g = Math.max(0, Math.min(255, Math.round(this.g)));
     this.b = Math.max(0, Math.min(255, Math.round(this.b)));
   };
+
+  /*
+   * UTILS
+   */
+
+  function hue2rgb(p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1/6) return p + (q - p) * 6 * t;
+      if (t < 1/2) return q;
+      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+  }
 
   module.exports = Colr;
 

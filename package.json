@@ -1,6 +1,6 @@
 {
   "name": "colr",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simple color conversion library that promotes stability and simplicity",
   "main": "index.js",
   "scripts": {
@@ -12,9 +12,16 @@
   },
   "keywords": [
     "color",
+    "convert",
     "converstion",
+    "grayscale",
     "hex",
-    "rgb"
+    "rgb",
+    "hsv",
+    "hsl",
+    "hsb",
+    "lighten",
+    "darken"
   ],
   "author": "George Czabania",
   "license": "MIT",
