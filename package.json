@@ -1,0 +1,25 @@
+{
+  "name": "colr",
+  "version": "1.0.0",
+  "description": "Simple color conversion library that promotes stability and simplicity",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec -b test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stayradiated/colr"
+  },
+  "keywords": [
+    "color",
+    "converstion",
+    "hex",
+    "rgb"
+  ],
+  "author": "George Czabania",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stayradiated/colr/issues"
+  },
+  "homepage": "https://github.com/stayradiated/colr"
+}
