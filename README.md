@@ -7,6 +7,8 @@ Simple color conversion library based on simplicity and stability
 
 ### Constructors
 
+Create a new instance of the Colr class
+
 ```javascript
 // create a  empty instance
 var colr = new Colr();
@@ -28,30 +30,56 @@ var colr = Colr.fromHslObject({h:320, s:20, l:90});
 var colr = Colr.fromGrayscale(128);
 ```
 
-### Conversions
+### Importers
+
+Change the color of an existing Colr instance.
 
 ```javascript
 var colr = new Colr();
 
-colr.toHex(); // "#000000"
+// import from hex
+colr.fromHex('#abc123');
 
-colr.toRgbArray(); // [0, 0, 0]
-colr.toRgbObject(); // {r:0, g:0, b:0}
+// import from rgb
+colr.fromRgb(20, 30, 40);
+colr.fromRgbArray([20, 30, 40]);
+colr.fromRgbObject({r:20, g:30, b:40});
 
-colr.toHslArray(); // [0, 0, 0]
-colr.toHslObject(); // {h:0, s:0, l:0}
+// import from hsl
+colr.fromHsl(320, 20, 90);
+colr.fromHslArray([320, 20, 90]);
+colr.fromHslObject({h:320, s:20, l:90});
 
-colr.toGrayscale(); // 0
+// create from grayscale
+colr.fromGrayscale(128);
 ```
 
-### Analysis
+### Exporters
+
+Convert the color to another format
 
 ```javascript
-var colr = new Colr();
+var colr = Colr().fromHex('bada55');
 
-// n = 0 - 100
-colr.lighten(n);
-colr.darken(n);
+colr.toHex(); // "#BADA55"
+
+colr.toRgbArray(); // [186, 218, 85]
+colr.toRgbObject(); // {r:186, g:218, b:85}
+
+colr.toHslArray(); // [74.4360902255639, 64.25120772946859, 59.411764705882355]
+colr.toHslObject(); // {h:74.4360902255639, s:64.25120772946859, l:59.411764705882355}
+
+colr.toGrayscale(); // 193.27
+```
+
+### Modifiers
+
+```javascript
+var colr = Colr.fromHex('000').lighten(20);
+colr.toHex(); // "#333333"
+
+var colr = Colr.fromHex('FFF').darken(20);
+colr.toHex(); // "#CCCCCC"
 ```
 
 ### Misc
