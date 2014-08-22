@@ -78,7 +78,7 @@ describe('Colr', function () {
     var tests = [
       [[0, 0, 0], [0, 0, 0]],
       [[0, 0, 100], [255, 255, 255]],
-      [[20, 30, 40], [132.6, 91.8, 71.4]],
+      [[20, 30, 40], [133, 92, 71]],
     ];
 
     tests.forEach(function (test) {
@@ -159,6 +159,34 @@ describe('Colr', function () {
     for (var key in tests) {
       colr = Colr.fromHex(key);
       assert.deepEqual(colr.toHslArray(), tests[key]);
+    }
+  });
+
+  it('should lighten the color', function () {
+    var tests = {
+      '#000000': '#808080',
+      '#aabbcc': '#FFFFFF',
+      '#332211': '#D0A273',
+    };
+
+    for (var key in tests) {
+      colr = Colr.fromHex(key);
+      colr.lighten(50);
+      assert.equal(colr.toHex(), tests[key]);
+    }
+  });
+
+  it('should darken the color', function () {
+    var tests = {
+      '#FFFFFF': '#808080',
+      '#aabbcc': '#2D3C4A',
+      '#332211': '#000000',
+    };
+
+    for (var key in tests) {
+      colr = Colr.fromHex(key);
+      colr.darken(50);
+      assert.equal(colr.toHex(), tests[key]);
     }
   });
 

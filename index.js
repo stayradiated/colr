@@ -91,9 +91,9 @@ Colr.prototype.fromRgbObject = function (obj) {
 };
 
 Colr.prototype.fromHsl = function (h, s, l) {
-  h = h / 360;
-  s = s / 100;
-  l = l / 100;
+  h = Math.max(0, Math.min(h, 360)) / 360;
+  s = Math.max(0, Math.min(s, 100)) / 100;
+  l = Math.max(0, Math.min(l, 100)) / 100;
 
   function hue2rgb(p, q, t) {
       if(t < 0) t += 1;
@@ -126,7 +126,7 @@ Colr.prototype.fromHslArray = function (arr) {
 };
 
 Colr.prototype.fromHslObject = function (obj) {
-  return this.fromRgb(obj.h, obj.s, obj.l);
+  return this.fromHsl(obj.h, obj.s, obj.l);
 };
 
 Colr.prototype.toHex = function () {
@@ -182,7 +182,7 @@ Colr.prototype.toHslArray = function () {
 
 Colr.prototype.toHslObject = function () {
   var hsl = this.toHslArray();
-  return { h: hsl.h, s: hsl.s, l: hsl.l };
+  return { h: hsl[0], s: hsl[1], l: hsl[2] };
 };
 
 Colr.prototype.clone = function () {
@@ -191,10 +191,24 @@ Colr.prototype.clone = function () {
   return colr;
 };
 
+Colr.prototype.lighten = function (amount) {
+  var hsl = this.toHslObject();
+  hsl.l += amount;
+  this.fromHslObject(hsl);
+  return this;
+};
+
+Colr.prototype.darken = function (amount) {
+  var hsl = this.toHslObject();
+  hsl.l -= amount;
+  this.fromHslObject(hsl);
+  return this;
+};
+
 Colr.prototype._sanitize = function () {
-  this.r = Math.max(0, Math.min(255, this.r));
-  this.g = Math.max(0, Math.min(255, this.g));
-  this.b = Math.max(0, Math.min(255, this.b));
+  this.r = Math.max(0, Math.min(255, Math.round(this.r)));
+  this.g = Math.max(0, Math.min(255, Math.round(this.g)));
+  this.b = Math.max(0, Math.min(255, Math.round(this.b)));
 };
 
 module.exports = Colr;
