@@ -74,6 +74,22 @@ describe('Colr', function () {
     });
   });
 
+  it('should convert from hsl', function () {
+    var tests = [
+      [[0, 0, 0], [0, 0, 0]],
+      [[0, 0, 100], [255, 255, 255]],
+      [[20, 30, 40], [132.6, 91.8, 71.4]],
+    ];
+
+    tests.forEach(function (test) {
+      var input = test[0];
+      var expected = test[1];
+
+      colr = Colr.fromHslArray(input);
+      assert(equal(expected));
+    });
+  });
+
   it('should output as a hex string', function () {
     var tests = {
       '#bada55': '#BADA55',
@@ -130,6 +146,19 @@ describe('Colr', function () {
     for (var key in tests) {
       colr = Colr.fromHex(key);
       assert.equal(colr.toGrayscale(), tests[key]);
+    }
+  });
+
+  it('should convert to hsl', function () {
+    var tests = {
+      '#000000': [0, 0, 0],
+      '#FFFFFF': [0, 0, 100],
+      '#bada55': [74.4360902255639, 64.25120772946859, 59.411764705882355],
+    };
+
+    for (var key in tests) {
+      colr = Colr.fromHex(key);
+      assert.deepEqual(colr.toHslArray(), tests[key]);
     }
   });
 
