@@ -21,8 +21,7 @@ describe('Colr', function () {
     };
 
     for (var key in tests) {
-      colr = new Colr();
-      colr.fromHex(key);
+      colr = Colr.fromHex(key);
       assert(equal(tests[key]));
     }
   });
@@ -32,8 +31,7 @@ describe('Colr', function () {
 
     tests.forEach(function (value) {
       assert.throws(function () {
-        colr = new Colr();
-        colr.fromHex(value);
+        colr = Colr.fromHex(value);
       });
     });
   });
@@ -50,16 +48,13 @@ describe('Colr', function () {
       var input = test[0];
       var expected = test[1];
 
-      colr = new Colr();
-      colr.fromRgb.apply(colr, input);
+      colr = Colr.fromRgb.apply(null, input);
       assert(equal(expected));
 
-      colr = new Colr();
-      colr.fromRgbArray(input);
+      colr = Colr.fromRgbArray(input);
       assert(equal(expected));
 
-      colr = new Colr();
-      colr.fromRgbObject({ r: input[0], g: input[1], b: input[2] });
+      colr = Colr.fromRgbObject({ r: input[0], g: input[1], b: input[2] });
       assert(equal(expected));
     });
   });
@@ -74,8 +69,7 @@ describe('Colr', function () {
 
     tests.forEach(function (test) { 
       assert.throws(function () {
-        colr = new Colr();
-        colr.fromRgb.apply(colr, test);
+        colr = Colr.fromRgb.apply(null, test);
       });
     });
   });
@@ -90,8 +84,7 @@ describe('Colr', function () {
     };
 
     for (var key in tests) {
-      colr = new Colr();
-      colr.fromHex(key);
+      colr = Colr.fromHex(key);
       assert.equal(colr.toHex(), tests[key]);
     }
   });
@@ -106,8 +99,7 @@ describe('Colr', function () {
       var input = test[0];
       var expected = test[1];
       
-      colr = new Colr();
-      colr.fromRgbArray(input);
+      colr = Colr.fromRgbArray(input);
       assert(equal(expected));
     });
   });
@@ -122,10 +114,23 @@ describe('Colr', function () {
       var input = test[0];
       var expected = test[1];
       
-      colr = new Colr();
-      colr.fromRgbArray(input);
+      colr = Colr.fromRgbArray(input);
       assert.deepEqual(colr.toRgbObject(), expected);
     });
+  });
+
+  it('should convert to grayscale', function () {
+    var tests = {
+      '#FFFFFF': 255,
+      '#000000': 0,
+      '#808080': 128,
+      '#bada55': 193.27,
+    };
+
+    for (var key in tests) {
+      colr = Colr.fromHex(key);
+      assert.equal(colr.toGrayscale(), tests[key]);
+    }
   });
 
 });

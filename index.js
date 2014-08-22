@@ -94,6 +94,10 @@ Colr.prototype.toRgbObject = function () {
   };
 };
 
+Colr.prototype.toGrayscale = function () {
+  return (this.r * 299 + this.g * 587 + this.b * 114) / 1000;
+};
+
 Colr.prototype.clone = function () {
   var colr = new Colr();
   colr.fromRgbArray(this.toRgbArray());

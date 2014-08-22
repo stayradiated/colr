@@ -5,15 +5,43 @@ Simple color conversion library based on simplicity and stability
 
 ## API
 
-### new Colr()
+### Constructors
 
-### Colr.fromHex(string)
+```javascript
+// create a  empty instance
+var colr = new Colr();
 
-### Colr.toHex()
+// create from hex
+var colr = Colr.fromHex('#abc123');
 
-### Colr.fromRgb(r, g, b)
-### Colr.fromRgbArray([r, g, b])
-### Colr.fromRgbObject({r, g, b})
+// create from rgb
+var colr = Colr.fromRgb(20, 30, 40);
+var colr = Colr.fromRgbArray([20, 30, 40]);
+var colr = Colr.fromRgbObject({r:20, g:30, b:40});
+```
 
-### Colr.toRgbArray()
-### Colr.toRgbObject()
+### Conversions
+
+```javascript
+var colr = new Colr();
+
+colr.toHex(); // "#000000"
+
+colr.toRgbArray(); // [0, 0, 0]
+colr.toRgbObject(); // {r:0, g:0, b:0}
+```
+
+### Analysis
+
+```javascript
+var colr = new Colr();
+
+colr.getBrightness();
+```
+
+### Misc
+
+```javascript
+var colr = Colr.fromHex('#c0ffee');
+var copy = colr.clone();
+```
