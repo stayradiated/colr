@@ -6,6 +6,7 @@
   */
 
   var Colr = function () {
+    if (! (this instanceof Colr)) return new Colr();
     this.r = this.b = this.g = 0;
   };
 
