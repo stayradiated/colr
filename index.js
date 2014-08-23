@@ -312,7 +312,7 @@
 
   Colr.prototype.toHsvObject = function () {
     var hsv = this.toHsvArray();
-    return { h: hsv[0], s: hsv[1], l: hsv[2] };
+    return { h: hsv[0], s: hsv[1], v: hsv[2] };
   };
 
 

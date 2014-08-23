@@ -242,6 +242,11 @@ describe('Colr', function () {
     for (var key in tests) {
       colr = Colr.fromHex(key);
       assert.deepEqual(colr.toHslArray(), tests[key]);
+      assert.deepEqual(colr.toHslObject(), {
+        h: tests[key][0],
+        s: tests[key][1],
+        l: tests[key][2],
+      });
     }
   });
 
@@ -257,6 +262,11 @@ describe('Colr', function () {
     for (var key in tests) {
       colr = Colr.fromHex(key);
       assert.deepEqual(colr.toHsvArray(), tests[key]);
+      assert.deepEqual(colr.toHsvObject(), {
+        h: tests[key][0],
+        s: tests[key][1],
+        v: tests[key][2],
+      });
     }
   });
 
