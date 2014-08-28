@@ -104,3 +104,43 @@ a.lighten(20);
 a.toHex(); // '#333333'
 b.toHex(); // '#000000'
 ```
+
+## Benchmarks
+
+```
+# FromHex -> Lighten -> ToHex
+colr x 469,395 ops/sec ±1.47% (95 runs sampled)
+color x 82,521 ops/sec ±0.51% (103 runs sampled)
+tinycolor x 79,471 ops/sec ±0.12% (101 runs sampled)
+Fastest is colr
+
+# FromHex -> Lighten -> Darken -> ToHex
+colr x 411,389 ops/sec ±0.65% (95 runs sampled)
+color x 64,354 ops/sec ±0.32% (103 runs sampled)
+tinycolor x 55,725 ops/sec ±0.11% (99 runs sampled)
+Fastest is colr
+
+# FromHex -> ToHex
+colr x 1,573,937 ops/sec ±0.38% (98 runs sampled)
+color x 116,859 ops/sec ±0.48% (101 runs sampled)
+tinycolor x 201,785 ops/sec ±0.41% (103 runs sampled)
+Fastest is colr
+
+# FromHsv -> ToRgb -> ToHex
+colr x 340,751 ops/sec ±1.37% (90 runs sampled)
+color x 164,671 ops/sec ±0.61% (99 runs sampled)
+tinycolor x 531,621 ops/sec ±0.30% (100 runs sampled)
+Fastest is tinycolor
+
+# FromHsv -> ToHsl
+colr x 592,527 ops/sec ±1.05% (88 runs sampled)
+color x 210,901 ops/sec ±0.43% (102 runs sampled)
+tinycolor x 439,982 ops/sec ±0.36% (101 runs sampled)
+Fastest is colr
+
+# FromHsl -> ToHsv
+colr x 588,970 ops/sec ±1.01% (90 runs sampled)
+color x 201,790 ops/sec ±0.45% (96 runs sampled)
+tinycolor x 409,633 ops/sec ±0.54% (100 runs sampled)
+Fastest is colr
+```

@@ -209,11 +209,11 @@ describe('Colr', function () {
 
   it('should output as a hex string', function () {
     var tests = {
-      '#bada55': '#BADA55',
-      'abc': '#AABBCC',
+      '#bada55': '#bada55',
+      'abc': '#aabbcc',
       '#010203': '#010203',
       '000': '#000000',
-      'fff': '#FFFFFF',
+      'fff': '#ffffff',
     };
 
     for (var key in tests) {
@@ -319,8 +319,8 @@ describe('Colr', function () {
   it('should lighten the color', function () {
     var tests = {
       '#000000': '#808080',
-      '#aabbcc': '#FFFFFF',
-      '#332211': '#D0A273',
+      '#aabbcc': '#ffffff',
+      '#332211': '#d0a273',
     };
 
     for (var key in tests) {
@@ -333,7 +333,7 @@ describe('Colr', function () {
   it('should darken the color', function () {
     var tests = {
       '#FFFFFF': '#808080',
-      '#aabbcc': '#2D3C4A',
+      '#aabbcc': '#2d3c4a',
       '#332211': '#000000',
     };
 
@@ -356,7 +356,7 @@ describe('Colr', function () {
     a.lighten(20);
     b.darken(20);
 
-    assert.equal(a.toHex(), '#DDDDDD');
+    assert.equal(a.toHex(), '#dddddd');
     assert.equal(b.toHex(), '#777777');
   });
 

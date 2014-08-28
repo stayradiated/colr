@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/stayradiated/colr",
   "dependencies": {
-    "colr-convert": "^1.0.0"
+    "colr-convert": "^1.0.1"
   },
   "devDependencies": {
     "benchmark": "^1.0.0",
