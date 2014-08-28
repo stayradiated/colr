@@ -6,7 +6,7 @@ describe('Colr', function () {
   var colr;
 
   var equal = function (arr) {
-    assert.deepEqual([colr.r, colr.g, colr.b], arr);
+    assert.deepEqual(colr.toRgbArray(), arr);
   };
 
 
@@ -257,7 +257,7 @@ describe('Colr', function () {
     var tests = {
       '#000000': [0, 0, 0],
       '#FFFFFF': [0, 0, 100],
-      '#bada55': [74.4360902255639,61.00917431192659,85.49019607843137],
+      '#bada55': [74.4360902255639,61.00917431192661,85.49019607843137],
     };
 
     for (var key in tests) {

@@ -1,13 +1,39 @@
 (function () {
   'use strict';
 
+
+  /*
+   * DEPENDENCIES
+   */
+
+  var convert = require('color-convert');
+
+
+  /*
+   * CONSTANTS
+   */
+
+  var HEX = 'hex';
+  var RGB = 'rgb';
+  var HSV = 'hsv';
+  var HSL = 'hsl';
+  var SPACES = [HEX, RGB, HSV, HSL];
+  var SPACES_LENGTH = SPACES.length;
+  var CLAMP_360 = clamp.bind(null, 0, 360);
+  var CLAMP_255 = clamp.bind(null, 0, 255);
+  var CLAMP_100 = clamp.bind(null, 0, 100);
+  var ERR_NO_DATA = 'There is no data to convert';
+  var ERR_INVALID_INPUT = 'An argument is invalid';
+  var ERR_TYPE_MISMATCH = 'An argument is not the correct type';
+
+
   /*
   * CONSTRUCTOR
   */
 
   function Colr () {
     if (! (this instanceof Colr)) return new Colr();
-    this.r = this.b = this.g = 0;
+    this._bustCache();
   }
 
 
@@ -68,26 +94,31 @@
 
   Colr.prototype.fromHex = function (hex) {
     if (typeof hex !== 'string') {
-      throw new Error('colr.fromHex: requires string');
+      throw new Error(ERR_TYPE_MISMATCH);
     }
     if (hex[0] === '#') {
       hex = hex.slice(1);
     }
     if (! hex.match(/^[0-9a-f]*$/i)) {
-      throw new Error('colr.fromHex: invalid hex characters');
+      throw new Error(ERR_INVALID_INPUT);
     }
+
+    var r, g, b;
+
     if (hex.length >= 6) {
-      this.r = parseInt(hex.slice(0,2), 16);
-      this.g = parseInt(hex.slice(2,4), 16);
-      this.b = parseInt(hex.slice(4,6), 16);
+      r = parseInt(hex.slice(0,2), 16);
+      g = parseInt(hex.slice(2,4), 16);
+      b = parseInt(hex.slice(4,6), 16);
     } else if (hex.length >= 3){
-      this.r = parseInt(hex[0] + hex[0], 16);
-      this.g = parseInt(hex[1] + hex[1], 16);
-      this.b = parseInt(hex[2] + hex[2], 16);
+      r = parseInt(hex[0] + hex[0], 16);
+      g = parseInt(hex[1] + hex[1], 16);
+      b = parseInt(hex[2] + hex[2], 16);
     } else {
-      throw new Error('colr.fromHex: invalid hex length');
+      throw new Error(ERR_INVALID_INPUT);
     }
-    this._sanitize();
+
+    this._bustCache();
+    this._addSpace(RGB, [r, g, b]);
     return this;
   };
 
@@ -95,12 +126,13 @@
   
   Colr.prototype.fromGrayscale = function (value) {
     if (typeof value != 'number') {
-      throw new Error('colr.fromGrayscale requires a number');
+      throw new Error(ERR_TYPE_MISMATCH);
     }
-    this.r = value;
-    this.g = value;
-    this.b = value;
-    this._sanitize();
+
+    value = CLAMP_255(value);
+
+    this._bustCache();
+    this._addSpace(RGB, [value, value, value]);
     return this;
   };
 
@@ -108,12 +140,15 @@
 
   Colr.prototype.fromRgb = function (r, g, b) {
     if (typeof r != 'number' || typeof g != 'number' || typeof b != 'number') {
-      throw new Error('colr.fromRgb requires three numbers');
+      throw new Error(ERR_TYPE_MISMATCH);
     }
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this._sanitize();
+
+    r = CLAMP_255(r);
+    g = CLAMP_255(g);
+    b = CLAMP_255(b);
+
+    this._bustCache();
+    this._addSpace(RGB, [r, g, b]);
     return this;
   };
 
@@ -129,33 +164,15 @@
 
   Colr.prototype.fromHsl = function (h, s, l) {
     if (typeof h != 'number' || typeof s != 'number' || typeof l != 'number') {
-      throw new Error('colr.fromHsl requires three numbers');
+      throw new Error(ERR_TYPE_MISMATCH);
     }
 
-    var r, g, b;
+    h = CLAMP_360(h);
+    s = CLAMP_100(s);
+    l = CLAMP_100(l);
 
-    // clamp values: 0-360 (hue) and 0-100 (saturation and lightness)
-    h = Math.max(0, Math.min(360, h)) / 360;
-    s = Math.max(0, Math.min(100, s)) / 100;
-    l = Math.max(0, Math.min(100, l)) / 100;
-
-    // following code is from tinycolor
-    // github.com/bgrins/TinyColor
-
-    if (s === 0) {
-        r = g = b = l; // achromatic
-    } else {
-        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        var p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1/3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1/3);
-    }
-
-    this.r = r * 255;
-    this.g = g * 255;
-    this.b = b * 255;
-    this._sanitize();
+    this._bustCache();
+    this._addSpace(HSL, [h, s, l]);
     return this;
   };
 
@@ -171,31 +188,15 @@
   
   Colr.prototype.fromHsv = function (h, s, v) {
     if (typeof h != 'number' || typeof s != 'number' || typeof v != 'number') {
-      throw new Error('colr.fromHsv requires three numbers');
+      throw new Error(ERR_INVALID_INPUT);
     }
 
-    // clamp values: 0-360 (hue) and 0-100 (saturation and value)
-    h = Math.max(0, Math.min(360, h)) / 360 * 6;
-    s = Math.max(0, Math.min(100, s)) / 100;
-    v = Math.max(0, Math.min(100, v)) / 100;
+    h = CLAMP_360(h);
+    s = CLAMP_100(s);
+    v = CLAMP_100(v);
 
-    // following code is from tinycolor
-    // github.com/bgrins/TinyColor
-
-    var i = Math.floor(h);
-    var f = h - i;
-    var p = v * (1 - s);
-    var q = v * (1 - f * s);
-    var t = v * (1 - (1 - f) * s);
-    var mod = i % 6;
-    var r = [v, q, p, p, t, v][mod];
-    var g = [t, v, v, q, p, p][mod];
-    var b = [p, p, t, v, v, q][mod];
-
-    this.r = r * 255;
-    this.g = g * 255;
-    this.b = b * 255;
-    this._sanitize();
+    this._bustCache();
+    this._addSpace(HSV, [h, s, v]);
     return this;
   };
 
@@ -215,105 +216,101 @@
   // HEX
 
   Colr.prototype.toHex = function () {
-    var r = this.r.toString(16);
-    var g = this.g.toString(16);
-    var b = this.b.toString(16);
+    if (this._hasSpace(HEX)) {
+      return this._getSpace(HEX);
+    }
+    var rgb = this._hasSpace(RGB) ? this._getSpace(RGB) : this.toRgbArray();
+    var r = rgb[0].toString(16);
+    var g = rgb[1].toString(16);
+    var b = rgb[2].toString(16);
     if (r.length < 2) r = '0' + r;
     if (g.length < 2) g = '0' + g;
     if (b.length < 2) b = '0' + b;
-    return ('#' + r + g + b).toUpperCase();
+    var value = ('#' + r + g + b).toUpperCase();
+    this._addSpace(HEX, value);
+    return value;
   };
 
   // GRAYSCALE
 
   Colr.prototype.toGrayscale = function () {
-    return (this.r * 299 + this.g * 587 + this.b * 114) / 1000;
+    var rgb = this._hasSpace(RGB) ? this._getSpace(RGB) : this.toRgbArray();
+    return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
   };
 
   // RGB
 
   Colr.prototype.toRgbArray = function () {
-    return [ this.r, this.g, this.b ];
+    if (this._hasSpace(RGB)) {
+      return this._getSpace(RGB).slice(0);
+    }
+
+    var value;
+    if (this._hasSpace(HSV)) {
+      value = convert[HSV][RGB](this._getSpace(HSV));
+    } else if (this._hasSpace(HSL)) {
+      value = convert[HSL][RGB](this._getSpace(HSL));
+    } else {
+      throw new Error(ERR_NO_DATA);
+    }
+
+    this._addSpace(RGB, value);
+    return value;
   };
 
   Colr.prototype.toRgbObject = function () {
-    return {
-      r: this.r,
-      g: this.g,
-      b: this.b,
-    };
+    var rgb = this.toRgbArray();
+    return {r: rgb[0], g: rgb[1], b: rgb[2]};
   };
 
   // HSL
 
   Colr.prototype.toHslArray = function () {
-    var r = this.r / 255;
-    var g = this.g / 255;
-    var b = this.b / 255;
-
-    // following code is from tinycolor
-    // github.com/bgrins/TinyColor
-
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
-
-    if (max === min) {
-        h = s = 0; // achromatic
-    } else {
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch(max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-        }
-        h /= 6;
+    if (this._hasSpace(HSL)) {
+      return this._getSpace(HSL).slice(0);
     }
 
-    return [h * 360, s * 100, l * 100];
+    var value;
+    if (this._hasSpace(RGB)) {
+      value = convert.rgb2hslRaw(this._getSpace(RGB));
+    } else if (this._hasSpace(HSV)) {
+      value = convert.hsv2hslRaw(this._getSpace(HSV));
+    } else {
+      throw new Error(ERR_NO_DATA);
+    }
+
+    this._addSpace(HSL, value);
+    return value;
   };
 
   Colr.prototype.toHslObject = function () {
     var hsl = this.toHslArray();
-    return { h: hsl[0], s: hsl[1], l: hsl[2] };
+    return {h: hsl[0], s: hsl[1], l: hsl[2]};
   };
 
   // HSV
   
   Colr.prototype.toHsvArray = function () {
-    var r = this.r / 255;
-    var g = this.g / 255;
-    var b = this.b / 255;
-
-    // following code is from tinycolor
-    // github.com/bgrins/TinyColor
-
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-    var h, s, v = max;
-
-    var d = max - min;
-    s = max === 0 ? 0 : d / max;
-
-    if (max === min) {
-      h = 0; // achromatic
-    }
-    else {
-      switch(max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-      h /= 6;
+    if (this._hasSpace(HSV)) {
+      return this._getSpace(HSV).slice(0);
     }
 
-    return [h * 360, s * 100, v * 100];
+    var value;
+    if (this._hasSpace(RGB)) {
+      value = convert.rgb2hsvRaw(this._getSpace(RGB));
+    } else if (this._hasSpace(HSL)) {
+      value = convert.hsl2hsvRaw(this._getSpace(HSL));
+    } else {
+      throw new Error(ERR_NO_DATA);
+    }
+
+    this._addSpace(HSV, value);
+    return value;
   };
 
   Colr.prototype.toHsvObject = function () {
     var hsv = this.toHsvArray();
-    return { h: hsv[0], s: hsv[1], v: hsv[2] };
+    return {h: hsv[0], s: hsv[1], v: hsv[2]};
   };
 
 
@@ -322,16 +319,18 @@
   */
 
   Colr.prototype.lighten = function (amount) {
-    var hsl = this.toHslObject();
-    hsl.l += amount;
-    this.fromHslObject(hsl);
+    var hsl = this.toHslArray();
+    hsl[2] = CLAMP_100(hsl[2] + amount);
+    this._bustCache();
+    this._addSpace(HSL, hsl);
     return this;
   };
 
   Colr.prototype.darken = function (amount) {
-    var hsl = this.toHslObject();
-    hsl.l -= amount;
-    this.fromHslObject(hsl);
+    var hsl = this.toHslArray();
+    hsl[2] = CLAMP_100(hsl[2] - amount);
+    this._bustCache();
+    this._addSpace(HSL, hsl);
     return this;
   };
 
@@ -345,23 +344,33 @@
     return colr;
   };
 
-  Colr.prototype._sanitize = function () {
-    this.r = Math.max(0, Math.min(255, Math.round(this.r)));
-    this.g = Math.max(0, Math.min(255, Math.round(this.g)));
-    this.b = Math.max(0, Math.min(255, Math.round(this.b)));
+  /*
+   * CACHE MANAGEMENT
+   */
+
+  Colr.prototype._addSpace = function (id, value) {
+    this._[id] = value;
   };
+
+  Colr.prototype._hasSpace = function (id) {
+    return this._.hasOwnProperty(id);
+  };
+
+  Colr.prototype._getSpace = function (id) {
+    return this._[id];
+  };
+
+  Colr.prototype._bustCache = function () {
+    this._ = {};
+  };
+
 
   /*
    * UTILS
    */
 
-  function hue2rgb(p, q, t) {
-      if (t < 0) t += 1;
-      if (t > 1) t -= 1;
-      if (t < 1/6) return p + (q - p) * 6 * t;
-      if (t < 1/2) return q;
-      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-      return p;
+  function clamp(lo, hi, val) {
+    return Math.max(Math.min(val, hi), lo);
   }
 
   module.exports = Colr;
