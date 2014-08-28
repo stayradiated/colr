@@ -27,32 +27,33 @@ var suite = function (name, tests) {
 
 var hex = '#bada55';
 var hsv = {h: 180, s:50, v:50};
+var hsl = {h: 180, s:50, l:50};
 
-suite('Lighten', {
+suite('FromHex -> Lighten -> ToHex', {
   colr: function () {
     Colr.fromHex(hex).lighten(20).toHex();
   },
   color: function () {
-    color(hex).lighten(20).hexString();
+    color(hex).lighten(0.2).hexString();
   },
   tinycolor: function () {
     tinycolor(hex).lighten(20).toHexString();
   }
 });
 
-suite('Lighten & Darken', {
+suite('FromHex -> Lighten -> Darken -> ToHex', {
   colr: function ()  {
     Colr.fromHex(hex).lighten(10).darken(20).toHex();
   },
   color: function () {
-    color(hex).lighten(10).darken(20).hexString();
+    color(hex).lighten(0.1).darken(0.2).hexString();
   },
   tinycolor: function () {
     tinycolor(hex).lighten(10).darken(20).toHexString();
   }
 });
 
-suite('toHex', {
+suite('FromHex -> ToHex', {
   colr: function () {
     Colr.fromHex(hex).toHex();
   },
@@ -64,25 +65,25 @@ suite('toHex', {
   },
 });
 
-suite('toHex x2', {
+suite('FromHsv -> ToRgb -> ToHex', {
   colr: function () {
-    var obj = Colr.fromHex(hex);
-    obj.toHex();
+    var obj = Colr.fromHsvObject(hsv);
+    obj.toRgbObject();
     obj.toHex();
   },
   color: function () {
-    var obj = color(hex);
-    obj.hexString();
+    var obj = color(hsv);
+    obj.rgb();
     obj.hexString();
   },
   tinycolor: function () {
-    var obj = tinycolor(hex);
-    obj.toHexString();
+    var obj = tinycolor(hsv);
+    obj.toRgb();
     obj.toHexString();
   },
 });
 
-suite('HSV to HSL', {
+suite('FromHsv -> ToHsl', {
   colr: function () {
     Colr.fromHsvObject(hsv).toHslObject();
   },
@@ -91,5 +92,17 @@ suite('HSV to HSL', {
   },
   tinycolor: function() {
     tinycolor(hsv).toHsv();
+  }
+});
+
+suite('FromHsl -> ToHsv', {
+  colr: function () {
+    Colr.fromHslObject(hsl).toHsvObject();
+  },
+  color: function () {
+    color(hsl).hsv();
+  },
+  tinycolor: function() {
+    tinycolor(hsl).toHsl();
   }
 });

@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 var Colr = require('./index');
 
@@ -108,7 +110,7 @@ describe('Colr', function () {
 
   // HSL
 
-  it('should convert from hsl', function () {
+ it('should convert from hsl', function () {
     var tests = [
       [[0, 0, 0], [0, 0, 0]],
       [[0, 0, 100], [255, 255, 255]],
@@ -157,6 +159,44 @@ describe('Colr', function () {
 
       colr = Colr.fromHsvObject({ h: input[0], s: input[1], v: input[2] });
       equal(expected);
+    });
+  });
+
+  it('should convert from hsv to hsl', function () {
+    var tests = [
+      [[0, 0, 0], [0, 0, 0]],
+      [[0, 0, 100], [0, 0, 100]],
+      [[20, 30, 40], [20, 18, 34]],
+      [[-100, 2000, 50], [0, 100, 25]],
+      [[0, 100, 50], [0, 100, 25]],
+      [[1, 2, 3], [1, 1, 3]],
+    ];
+
+    tests.forEach(function (test) {
+      var input = test[0];
+      var expected = test[1];
+
+      colr = Colr.fromHsvArray(input);
+      assert.deepEqual(colr.toHslArray(), expected);
+    });
+  });
+
+  it('should convert from hsl to hsv', function () {
+    var tests = [
+      [[0, 0, 0], [0, 0, 0]],
+      [[0, 0, 100], [0, 0, 100]],
+      [[20, 30, 40], [20, 46, 52]],
+      [[-100, 2000, 50], [0, 100, 100]],
+      [[0, 100, 50], [0, 100, 100]],
+      [[1, 2, 3], [1, 4, 3]],
+    ];
+
+    tests.forEach(function (test) {
+      var input = test[0];
+      var expected = test[1];
+
+      colr = Colr.fromHslArray(input);
+      assert.deepEqual(colr.toHsvArray(), expected);
     });
   });
 
@@ -237,7 +277,7 @@ describe('Colr', function () {
     var tests = {
       '#000000': [0, 0, 0],
       '#FFFFFF': [0, 0, 100],
-      '#bada55': [74.4360902255639, 64.25120772946859, 59.411764705882355],
+      '#bada55': [74, 64, 59],
     };
 
     for (var key in tests) {
@@ -257,7 +297,7 @@ describe('Colr', function () {
     var tests = {
       '#000000': [0, 0, 0],
       '#FFFFFF': [0, 0, 100],
-      '#bada55': [74.4360902255639,61.00917431192661,85.49019607843137],
+      '#bada55': [74, 61, 85],
     };
 
     for (var key in tests) {

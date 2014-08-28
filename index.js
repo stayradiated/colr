@@ -6,7 +6,7 @@
    * DEPENDENCIES
    */
 
-  var convert = require('color-convert');
+  var convert = require('colr-convert');
 
 
   /*
@@ -17,11 +17,11 @@
   var RGB = 'rgb';
   var HSV = 'hsv';
   var HSL = 'hsl';
-  var SPACES = [HEX, RGB, HSV, HSL];
-  var SPACES_LENGTH = SPACES.length;
+
   var CLAMP_360 = clamp.bind(null, 0, 360);
   var CLAMP_255 = clamp.bind(null, 0, 255);
   var CLAMP_100 = clamp.bind(null, 0, 100);
+
   var ERR_NO_DATA = 'There is no data to convert';
   var ERR_INVALID_INPUT = 'An argument is invalid';
   var ERR_TYPE_MISMATCH = 'An argument is not the correct type';
@@ -32,7 +32,7 @@
   */
 
   function Colr () {
-    if (! (this instanceof Colr)) return new Colr();
+    if (! (this instanceof Colr)) { return new Colr(); }
     this._bustCache();
   }
 
@@ -125,7 +125,7 @@
   // GRAYSCALE
   
   Colr.prototype.fromGrayscale = function (value) {
-    if (typeof value != 'number') {
+    if (typeof value !== 'number') {
       throw new Error(ERR_TYPE_MISMATCH);
     }
 
@@ -139,7 +139,7 @@
   // RGB
 
   Colr.prototype.fromRgb = function (r, g, b) {
-    if (typeof r != 'number' || typeof g != 'number' || typeof b != 'number') {
+    if (typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number') {
       throw new Error(ERR_TYPE_MISMATCH);
     }
 
@@ -163,7 +163,7 @@
   // HSL
 
   Colr.prototype.fromHsl = function (h, s, l) {
-    if (typeof h != 'number' || typeof s != 'number' || typeof l != 'number') {
+    if (typeof h !== 'number' || typeof s !== 'number' || typeof l !== 'number') {
       throw new Error(ERR_TYPE_MISMATCH);
     }
 
@@ -187,7 +187,7 @@
   // HSV
   
   Colr.prototype.fromHsv = function (h, s, v) {
-    if (typeof h != 'number' || typeof s != 'number' || typeof v != 'number') {
+    if (typeof h !== 'number' || typeof s !== 'number' || typeof v !== 'number') {
       throw new Error(ERR_INVALID_INPUT);
     }
 
@@ -219,13 +219,13 @@
     if (this._hasSpace(HEX)) {
       return this._getSpace(HEX);
     }
-    var rgb = this._hasSpace(RGB) ? this._getSpace(RGB) : this.toRgbArray();
-    var r = rgb[0].toString(16);
-    var g = rgb[1].toString(16);
-    var b = rgb[2].toString(16);
-    if (r.length < 2) r = '0' + r;
-    if (g.length < 2) g = '0' + g;
-    if (b.length < 2) b = '0' + b;
+    var rgb = this._hasSpace(RGB) ? this._getSpace(RGB) : this.toRawRgbArray();
+    var r = Math.round(rgb[0]).toString(16);
+    var g = Math.round(rgb[1]).toString(16);
+    var b = Math.round(rgb[2]).toString(16);
+    if (r.length < 2) { r = '0' + r; }
+    if (g.length < 2) { g = '0' + g; }
+    if (b.length < 2) { b = '0' + b; }
     var value = ('#' + r + g + b).toUpperCase();
     this._addSpace(HEX, value);
     return value;
@@ -234,28 +234,32 @@
   // GRAYSCALE
 
   Colr.prototype.toGrayscale = function () {
-    var rgb = this._hasSpace(RGB) ? this._getSpace(RGB) : this.toRgbArray();
+    var rgb = this._hasSpace(RGB) ? this._getSpace(RGB) : this.toRawRgbArray();
     return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
   };
 
   // RGB
 
-  Colr.prototype.toRgbArray = function () {
+  Colr.prototype.toRawRgbArray = function () {
     if (this._hasSpace(RGB)) {
-      return this._getSpace(RGB).slice(0);
+      return this._getSpace(RGB);
     }
 
     var value;
     if (this._hasSpace(HSV)) {
-      value = convert[HSV][RGB](this._getSpace(HSV));
+      value = convert.hsv.rgb(this._getSpace(HSV));
     } else if (this._hasSpace(HSL)) {
-      value = convert[HSL][RGB](this._getSpace(HSL));
+      value = convert.hsl.rgb(this._getSpace(HSL));
     } else {
       throw new Error(ERR_NO_DATA);
     }
 
     this._addSpace(RGB, value);
     return value;
+  };
+
+  Colr.prototype.toRgbArray = function () {
+    return this.toRawRgbArray().map(Math.round);
   };
 
   Colr.prototype.toRgbObject = function () {
@@ -265,16 +269,16 @@
 
   // HSL
 
-  Colr.prototype.toHslArray = function () {
+  Colr.prototype.toRawHslArray = function () {
     if (this._hasSpace(HSL)) {
-      return this._getSpace(HSL).slice(0);
+      return this._getSpace(HSL);
     }
 
     var value;
     if (this._hasSpace(RGB)) {
-      value = convert.rgb2hslRaw(this._getSpace(RGB));
+      value = convert.rgb.hsl(this._getSpace(RGB));
     } else if (this._hasSpace(HSV)) {
-      value = convert.hsv2hslRaw(this._getSpace(HSV));
+      value = convert.hsv.hsl(this._getSpace(HSV));
     } else {
       throw new Error(ERR_NO_DATA);
     }
@@ -283,29 +287,38 @@
     return value;
   };
 
+  Colr.prototype.toHslArray = function () {
+    return this.toRawHslArray().map(Math.round);
+  };
+
   Colr.prototype.toHslObject = function () {
     var hsl = this.toHslArray();
     return {h: hsl[0], s: hsl[1], l: hsl[2]};
   };
 
+
   // HSV
   
-  Colr.prototype.toHsvArray = function () {
+  Colr.prototype.toRawHsvArray = function () {
     if (this._hasSpace(HSV)) {
-      return this._getSpace(HSV).slice(0);
+      return this._getSpace(HSV);
     }
 
     var value;
     if (this._hasSpace(RGB)) {
-      value = convert.rgb2hsvRaw(this._getSpace(RGB));
+      value = convert.rgb.hsv(this._getSpace(RGB));
     } else if (this._hasSpace(HSL)) {
-      value = convert.hsl2hsvRaw(this._getSpace(HSL));
+      value = convert.hsl.hsv(this._getSpace(HSL));
     } else {
       throw new Error(ERR_NO_DATA);
     }
 
     this._addSpace(HSV, value);
     return value;
+  };
+
+  Colr.prototype.toHsvArray = function () {
+    return this.toRawHsvArray().map(Math.round);
   };
 
   Colr.prototype.toHsvObject = function () {
@@ -319,7 +332,7 @@
   */
 
   Colr.prototype.lighten = function (amount) {
-    var hsl = this.toHslArray();
+    var hsl = this.toRawHslArray();
     hsl[2] = CLAMP_100(hsl[2] + amount);
     this._bustCache();
     this._addSpace(HSL, hsl);
@@ -327,7 +340,7 @@
   };
 
   Colr.prototype.darken = function (amount) {
-    var hsl = this.toHslArray();
+    var hsl = this.toRawHslArray();
     hsl[2] = CLAMP_100(hsl[2] - amount);
     this._bustCache();
     this._addSpace(HSL, hsl);

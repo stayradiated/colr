@@ -1,7 +1,7 @@
 {
   "name": "colr",
-  "version": "1.0.8",
-  "description": "Simple color conversion library that promotes stability and simplicity",
+  "version": "1.1.0",
+  "description": "Fast and simple color conversion",
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec -b test"
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/stayradiated/colr",
   "dependencies": {
-    "color-convert": "^0.5.0"
+    "colr-convert": "^1.0.0"
   },
   "devDependencies": {
     "benchmark": "^1.0.0",
