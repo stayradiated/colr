@@ -70,12 +70,15 @@ colr.toHex(); // "#BADA55"
 
 colr.toRgbArray(); // [186, 218, 85]
 colr.toRgbObject(); // {r:186, g:218, b:85}
+colr.toRawRgbArray(); // [186, 218, 85]
 
-colr.toHslArray(); // [74.4360902255639, 64.25120772946859, 59.411764705882355]
-colr.toHslObject(); // {h:74.4360902255639, s:64.25120772946859, l:59.411764705882355}
+colr.toHslArray(); // [74, 64, 59]
+colr.toHslObject(); // {h:74, s:64, l:59}
+colr.toRawHslArray(); // [74.4360902255639, 64.25120772946859, 59.411764705882355]
 
-colr.toHsvArray(); // [74.4360902255639, 61.00917431192659, 85.49019607843137]
-colr.toHsvObject(); //{h: 74.4360902255639, s: 61.00917431192659, l: 85.49019607843137}
+colr.toHsvArray(); // [74, 61, 85]
+colr.toHsvObject(); //{h: 74, s: 61, l: 85}
+colr.toRawHsvArray(); // [74.4360902255639, 61.00917431192661, 85.49019607843137]
 
 colr.toGrayscale(); // 193.27
 ```
@@ -93,6 +96,11 @@ colr.toHex(); // "#CCCCCC"
 ### Misc
 
 ```javascript
-var colr = Colr.fromHex('#c0ffee');
-var copy = colr.clone();
+var a = Colr.fromHex('#000');
+var b = a.clone();
+
+a.lighten(20);
+
+a.toHex(); // '#333333'
+b.toHex(); // '#000000'
 ```

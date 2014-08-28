@@ -353,7 +353,10 @@
 
   Colr.prototype.clone = function () {
     var colr = new Colr();
-    colr.fromRgbArray(this.toRgbArray());
+    if (this._hasSpace(HEX)) { colr._[HEX] = this._[HEX]; }
+    if (this._hasSpace(RGB)) { colr._[RGB] = this._[RGB]; }
+    if (this._hasSpace(HSV)) { colr._[HSV] = this._[HSV]; }
+    if (this._hasSpace(HSL)) { colr._[HSL] = this._[HSL]; }
     return colr;
   };
 

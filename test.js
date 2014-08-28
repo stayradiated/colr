@@ -344,4 +344,20 @@ describe('Colr', function () {
     }
   });
 
+
+  /*
+   * MISC
+   */
+
+  it('should clone a color', function () {
+    var a = Colr.fromHex('aaa');
+    var b = a.clone();
+
+    a.lighten(20);
+    b.darken(20);
+
+    assert.equal(a.toHex(), '#DDDDDD');
+    assert.equal(b.toHex(), '#777777');
+  });
+
 });
