@@ -227,6 +227,11 @@ Colr.prototype.toRawRgbArray = function () {
   return value;
 };
 
+Colr.prototype.toRawRgbObject = function () {
+  var rgb = this.toRawRgbArray();
+  return {r: rgb[0], g: rgb[1], b: rgb[2]};
+};
+
 Colr.prototype.toRgbArray = function () {
   return this.toRawRgbArray().map(Math.round);
 };
@@ -254,6 +259,11 @@ Colr.prototype.toRawHslArray = function () {
 
   this._set(HSL, value);
   return value;
+};
+
+Colr.prototype.toRawHslObject = function () {
+  var hsl = this.toRawHslArray();
+  return {h: hsl[0], s: hsl[1], l: hsl[2]};
 };
 
 Colr.prototype.toHslArray = function () {
@@ -284,6 +294,11 @@ Colr.prototype.toRawHsvArray = function () {
 
   this._set(HSV, value);
   return value;
+};
+
+Colr.prototype.toHsvObject = function () {
+  var hsv = this.toRawHsvArray();
+  return {h: hsv[0], s: hsv[1], v: hsv[2]};
 };
 
 Colr.prototype.toHsvArray = function () {

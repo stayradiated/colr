@@ -34,6 +34,8 @@ var colr = Colr.fromGrayscale(128);
 
 Change the color of an existing Colr instance.
 
+All methods return the `colr` instance and can be chained.
+
 ```javascript
 var colr = new Colr();
 
@@ -71,19 +73,24 @@ colr.toHex(); // "#BADA55"
 colr.toRgbArray(); // [186, 218, 85]
 colr.toRgbObject(); // {r:186, g:218, b:85}
 colr.toRawRgbArray(); // [186, 218, 85]
+colr.toRawRgbObject(); // {r:186, g:218, b:85}
 
 colr.toHslArray(); // [74, 64, 59]
 colr.toHslObject(); // {h:74, s:64, l:59}
-colr.toRawHslArray(); // [74.4360902255639, 64.25120772946859, 59.411764705882355]
+colr.toRawHslArray(); // {74.4360902255639, 64.25120772946859, 59.411764705882355]
+colr.toRawHslObject(); // {r:74.4360902255639, g:64.25120772946859, b:59.411764705882355}
 
 colr.toHsvArray(); // [74, 61, 85]
 colr.toHsvObject(); //{h: 74, s: 61, l: 85}
 colr.toRawHsvArray(); // [74.4360902255639, 61.00917431192661, 85.49019607843137]
+colr.toRawHsvObject(); // {r:74.4360902255639, g:61.00917431192661, b:85.49019607843137}
 
 colr.toGrayscale(); // 193.27
 ```
 
 ### Modifiers
+
+All methods return the `colr` instance and can be chained.
 
 ```javascript
 var colr = Colr.fromHex('000').lighten(20);
