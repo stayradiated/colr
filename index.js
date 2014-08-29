@@ -17,10 +17,6 @@ var RGB = 'rgb';
 var HSV = 'hsv';
 var HSL = 'hsl';
 
-var CLAMP_360 = clamp.bind(null, 0, 360);
-var CLAMP_255 = clamp.bind(null, 0, 255);
-var CLAMP_100 = clamp.bind(null, 0, 100);
-
 var ERR_NO_DATA = 'There is no data to convert';
 var ERR_INVALID_INPUT = 'An argument is invalid';
 var ERR_TYPE_MISMATCH = 'An argument is not the correct type';
@@ -106,7 +102,7 @@ Colr.prototype.fromGrayscale = function (lightness) {
     throw new Error(ERR_TYPE_MISMATCH);
   }
 
-  var value = CLAMP_255(lightness);
+  var value = clamp(lightness, 0, 255);
 
   this._bust();
   this._set(RGB, [value, value, value]);
@@ -120,9 +116,9 @@ Colr.prototype.fromRgb = function (r, g, b) {
     throw new Error(ERR_TYPE_MISMATCH);
   }
 
-  r = CLAMP_255(r);
-  g = CLAMP_255(g);
-  b = CLAMP_255(b);
+  r = clamp(r, 0, 255);
+  g = clamp(g, 0, 255);
+  b = clamp(b, 0, 255);
 
   this._bust();
   this._set(RGB, [r, g, b]);
@@ -144,9 +140,9 @@ Colr.prototype.fromHsl = function (h, s, l) {
     throw new Error(ERR_TYPE_MISMATCH);
   }
 
-  h = CLAMP_360(h);
-  s = CLAMP_100(s);
-  l = CLAMP_100(l);
+  h = clamp(h, 0, 360);
+  s = clamp(s, 0, 100);
+  l = clamp(l, 0, 100);
 
   this._bust();
   this._set(HSL, [h, s, l]);
@@ -168,11 +164,11 @@ Colr.prototype.fromHsv = function (h, s, v) {
     throw new Error(ERR_INVALID_INPUT);
   }
 
-  h = CLAMP_360(h);
-  s = CLAMP_100(s);
-  v = CLAMP_100(v);
+  h = clamp(h, 0, 360);
+  s = clamp(s, 0, 100);
+  v = clamp(v, 0, 100);
 
-  this._bust();
+  // this._bust();
   this._set(HSV, [h, s, v]);
   return this;
 };
@@ -306,7 +302,7 @@ Colr.prototype.toHsvObject = function () {
 
 Colr.prototype.lighten = function (amount) {
   var hsl = this.toRawHslArray();
-  hsl[2] = CLAMP_100(hsl[2] + amount);
+  hsl[2] = clamp(hsl[2] + amount, 0, 100);
   this._bust();
   this._set(HSL, hsl);
   return this;
@@ -314,7 +310,7 @@ Colr.prototype.lighten = function (amount) {
 
 Colr.prototype.darken = function (amount) {
   var hsl = this.toRawHslArray();
-  hsl[2] = CLAMP_100(hsl[2] - amount);
+  hsl[2] = clamp(hsl[2] - amount, 0, 100);
   this._bust();
   this._set(HSL, hsl);
   return this;
@@ -358,7 +354,7 @@ Colr.prototype._bust = function () {
  * UTILS
  */
 
-function clamp(lo, hi, val) {
+function clamp(val, lo, hi) {
   return Math.max(Math.min(val, hi), lo);
 }
 

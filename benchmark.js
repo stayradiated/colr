@@ -29,6 +29,18 @@ var hex = '#bada55';
 var hsv = {h: 180, s:50, v:50};
 var hsl = {h: 180, s:50, l:50};
 
+suite('FromHsv -> ToRgb', {
+  colr: function () {
+    Colr.fromHsvObject(hsv).toRgbObject();
+  },
+  tinycolor: function () {
+    tinycolor(hsv).toRgb();
+  },
+  color: function () {
+    color(hsv).rgb();
+  },
+});
+
 suite('FromHex -> Lighten -> ToHex', {
   colr: function () {
     Colr.fromHex(hex).lighten(20).toHex();
