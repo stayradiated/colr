@@ -102,7 +102,7 @@ Colr.prototype.fromGrayscale = function (lightness) {
     throw new Error(ERR_TYPE_MISMATCH);
   }
 
-  var value = clamp(lightness, 0, 255);
+  var value = clamp(lightness, 255);
 
   this._bust();
   this._set(RGB, [value, value, value]);
@@ -116,9 +116,9 @@ Colr.prototype.fromRgb = function (r, g, b) {
     throw new Error(ERR_TYPE_MISMATCH);
   }
 
-  r = clamp(r, 0, 255);
-  g = clamp(g, 0, 255);
-  b = clamp(b, 0, 255);
+  r = clamp(r, 255);
+  g = clamp(g, 255);
+  b = clamp(b, 255);
 
   this._bust();
   this._set(RGB, [r, g, b]);
@@ -140,9 +140,9 @@ Colr.prototype.fromHsl = function (h, s, l) {
     throw new Error(ERR_TYPE_MISMATCH);
   }
 
-  h = clamp(h, 0, 360);
-  s = clamp(s, 0, 100);
-  l = clamp(l, 0, 100);
+  h = clamp(h, 360);
+  s = clamp(s, 100);
+  l = clamp(l, 100);
 
   this._bust();
   this._set(HSL, [h, s, l]);
@@ -164,9 +164,9 @@ Colr.prototype.fromHsv = function (h, s, v) {
     throw new Error(ERR_INVALID_INPUT);
   }
 
-  h = clamp(h, 0, 360);
-  s = clamp(s, 0, 100);
-  v = clamp(v, 0, 100);
+  h = clamp(h, 360);
+  s = clamp(s, 100);
+  v = clamp(v, 100);
 
   // this._bust();
   this._set(HSV, [h, s, v]);
@@ -317,7 +317,7 @@ Colr.prototype.toHsvObject = function () {
 
 Colr.prototype.lighten = function (amount) {
   var hsl = this.toRawHslArray();
-  hsl[2] = clamp(hsl[2] + amount, 0, 100);
+  hsl[2] = clamp(hsl[2] + amount, 100);
   this._bust();
   this._set(HSL, hsl);
   return this;
@@ -325,7 +325,7 @@ Colr.prototype.lighten = function (amount) {
 
 Colr.prototype.darken = function (amount) {
   var hsl = this.toRawHslArray();
-  hsl[2] = clamp(hsl[2] - amount, 0, 100);
+  hsl[2] = clamp(hsl[2] - amount, 100);
   this._bust();
   this._set(HSL, hsl);
   return this;
@@ -369,8 +369,8 @@ Colr.prototype._bust = function () {
  * UTILS
  */
 
-function clamp(val, lo, hi) {
-  return Math.max(Math.min(val, hi), lo);
+function clamp(val, max) {
+  return Math.max(Math.min(val, max), 0);
 }
 
 module.exports = Colr;
