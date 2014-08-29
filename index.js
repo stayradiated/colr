@@ -296,7 +296,7 @@ Colr.prototype.toRawHsvArray = function () {
   return value;
 };
 
-Colr.prototype.toHsvObject = function () {
+Colr.prototype.toRawHsvObject = function () {
   var hsv = this.toRawHsvArray();
   return {h: hsv[0], s: hsv[1], v: hsv[2]};
 };
