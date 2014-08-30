@@ -31,7 +31,7 @@ var hsl = {h: 180, s:50, l:50};
 
 suite('FromHsv -> ToRgb', {
   colr: function () {
-    Colr.fromHsvObject(hsv).toRgbObject();
+    Colr.fromHsvObject(hsv).toRgbArray();
   },
   tinycolor: function () {
     tinycolor(hsv).toRgb();

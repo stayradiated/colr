@@ -9,35 +9,25 @@ var convert = require('colr-convert');
 
 
 /*
- * CONSTANTS
+ * CONSTRUCTOR
  */
 
-var HEX = 'hex';
-var RGB = 'rgb';
-var HSV = 'hsv';
-var HSL = 'hsl';
-
-var ERR_NO_DATA = 'There is no data to convert';
-var ERR_INVALID_INPUT = 'An argument is invalid';
-var ERR_TYPE_MISMATCH = 'An argument is not the correct type';
-
-
-/*
-* CONSTRUCTOR
-*/
-
 function Colr () {
-  if (! (this instanceof Colr)) { return new Colr(); }
-  this._bust();
+  if ((this instanceof Colr) === false) { return new Colr(); }
+  this._ = {};
 }
 
 
 /*
-* STATIC METHODS
-*/
+ * STATIC METHODS
+ */
 
 Colr.fromHex = function (hex) {
   return (new Colr()).fromHex(hex);
+};
+
+Colr.fromGrayscale = function (value) {
+  return (new Colr()).fromGrayscale(value);
 };
 
 Colr.fromRgb = function (r, g, b) {
@@ -45,27 +35,22 @@ Colr.fromRgb = function (r, g, b) {
 };
 
 Colr.fromRgbArray = function (arr) {
-  return (new Colr()).fromRgbArray(arr);
+  return (new Colr()).fromRgb(arr[0], arr[1], arr[2]);
 };
 
 Colr.fromRgbObject = function (obj) {
-  return (new Colr()).fromRgbObject(obj);
+  return (new Colr()).fromRgb(obj.r, obj.g, obj.b);
 };
-
-Colr.fromGrayscale = function (value) {
-  return (new Colr()).fromGrayscale(value);
-};
-
 Colr.fromHsl = function (h, s, l) {
   return (new Colr()).fromHsl(h, s, l);
 };
 
 Colr.fromHslArray = function (arr) {
-  return (new Colr()).fromHslArray(arr);
+  return (new Colr()).fromHsl(arr[0], arr[1], arr[2]);
 };
 
 Colr.fromHslObject = function (obj) {
-  return (new Colr()).fromHslObject(obj);
+  return (new Colr()).fromHsl(obj.h, obj.s, obj.l);
 };
 
 Colr.fromHsv = function (h, s, v) {
@@ -73,60 +58,48 @@ Colr.fromHsv = function (h, s, v) {
 };
 
 Colr.fromHsvArray = function (arr) {
-  return (new Colr()).fromHsvArray(arr);
+  return (new Colr()).fromHsv(arr[0], arr[1], arr[2]);
 };
 
 Colr.fromHsvObject = function (obj) {
-  return (new Colr()).fromHsvObject(obj);
+  return (new Colr()).fromHsv(obj.h, obj.s, obj.v);
 };
 
 
 /*
-* IMPORTERS
-*/
+ * IMPORTERS
+ */
 
 // HEX
 
-Colr.prototype.fromHex = function (hex) {
-  var value = convert.hex.rgb(hex);
-
-  this._bust();
-  this._set(RGB, value);
+Colr.prototype.fromHex = function (input) {
+  var value = convert.hex.rgb(input);
+  this._ = { rgb: value };
   return this;
 };
 
 // GRAYSCALE
 
-Colr.prototype.fromGrayscale = function (lightness) {
-  if (typeof lightness !== 'number') {
-    throw new Error(ERR_TYPE_MISMATCH);
-  }
-
-  var value = clamp(lightness, 255);
-
-  this._bust();
-  this._set(RGB, [value, value, value]);
+Colr.prototype.fromGrayscale = function (input) {
+  input = clampByte(input);
+  var value = convert.grayscale.rgb(input);
+  this._ = { rgb: value };
   return this;
 };
 
 // RGB
 
 Colr.prototype.fromRgb = function (r, g, b) {
-  if (typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number') {
-    throw new Error(ERR_TYPE_MISMATCH);
+  if (typeof(r) !== 'number' || typeof(g) !== 'number' || typeof(b) !== 'number') {
+    throw new Error('Arguments must be numbers');
   }
-
-  r = clamp(r, 255);
-  g = clamp(g, 255);
-  b = clamp(b, 255);
-
-  this._bust();
-  this._set(RGB, [r, g, b]);
+  var value = clampRgb(r, g, b);
+  this._ = { rgb: value };
   return this;
 };
 
 Colr.prototype.fromRgbArray = function (arr) {
-  return this.fromRgb.apply(this, arr);
+  return this.fromRgb(arr[0], arr[1], arr[2]);
 };
 
 Colr.prototype.fromRgbObject = function (obj) {
@@ -136,21 +109,15 @@ Colr.prototype.fromRgbObject = function (obj) {
 // HSL
 
 Colr.prototype.fromHsl = function (h, s, l) {
-  if (typeof h !== 'number' || typeof s !== 'number' || typeof l !== 'number') {
-    throw new Error(ERR_TYPE_MISMATCH);
+  if (typeof(h) !== 'number' || typeof(s) !== 'number' || typeof(l) !== 'number') {
+    throw new Error('Arguments must be numbers');
   }
-
-  h = clamp(h, 360);
-  s = clamp(s, 100);
-  l = clamp(l, 100);
-
-  this._bust();
-  this._set(HSL, [h, s, l]);
+  this._ = { hsl: clampHsx(h, s, l) };
   return this;
 };
 
 Colr.prototype.fromHslArray = function (arr) {
-  return this.fromHsl.apply(this, arr);
+  return this.fromHsl(arr[0], arr[1], arr[2]);
 };
 
 Colr.prototype.fromHslObject = function (obj) {
@@ -160,21 +127,15 @@ Colr.prototype.fromHslObject = function (obj) {
 // HSV
 
 Colr.prototype.fromHsv = function (h, s, v) {
-  if (typeof h !== 'number' || typeof s !== 'number' || typeof v !== 'number') {
-    throw new Error(ERR_INVALID_INPUT);
+  if (typeof(h) !== 'number' || typeof(s) !== 'number' || typeof(v) !== 'number') {
+    throw new Error('Arguments must be numbers');
   }
-
-  h = clamp(h, 360);
-  s = clamp(s, 100);
-  v = clamp(v, 100);
-
-  // this._bust();
-  this._set(HSV, [h, s, v]);
+  this._ = { hsv: clampHsx(h, s, v) };
   return this;
 };
 
 Colr.prototype.fromHsvArray = function (arr) {
-  return this.fromHsv.apply(this, arr);
+  return this.fromHsv(arr[0], arr[1], arr[2]);
 };
 
 Colr.prototype.fromHsvObject = function (obj) {
@@ -183,151 +144,169 @@ Colr.prototype.fromHsvObject = function (obj) {
 
 
 /*
-* EXPORTERS
-*/
+ * EXPORTERS
+ */
 
 // HEX
 
 Colr.prototype.toHex = function () {
-  if (this._has(HEX)) { return this._get(HEX); }
-  var rgb = this._has(RGB) ? this._get(RGB) : this.toRawRgbArray();
-  var value = convert.rgb.hex([
-    Math.round(rgb[0]),
-    Math.round(rgb[1]),
-    Math.round(rgb[2]),
-  ]);
-  this._set(HEX, value);
+  var cached = this._.hex;
+  if (cached !== undefined) { return cached; }
+
+  var input;
+  var cachedFrom = this._.rgb;
+
+  if (cachedFrom !== undefined) { input = cachedFrom; }
+  else { input = this.toRawRgbArray(); }
+
+  input[0] = Math.round(input[0]);
+  input[1] = Math.round(input[1]);
+  input[2] = Math.round(input[2]);
+
+  var value = convert.rgb.hex(input);
+  this._.hex = value;
+
   return value;
 };
 
 // GRAYSCALE
 
 Colr.prototype.toGrayscale = function () {
-  var rgb = this._has(RGB) ? this._get(RGB) : this.toRawRgbArray();
-  return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+  var cached = this._.grayscale;
+  if (cached !== undefined) { return cached; }
+
+  var input;
+  var cachedFrom = this._.rgb;
+
+  if (cachedFrom !== undefined) { input = cachedFrom; }
+  else { input = this.toRawRgbArray(); }
+
+  var value = convert.rgb.grayscale(input);
+  this._.grayscale = value;
+  return value;
 };
 
 // RGB
 
 Colr.prototype.toRawRgbArray = function () {
-  if (this._has(RGB)) {
-    return this._get(RGB);
-  }
+  var cached = this._.rgb;
+  if (cached !== undefined) { return cached; }
 
   var value;
-  if (this._has(HSV)) {
-    value = convert.hsv.rgb(this._get(HSV));
-  } else if (this._has(HSL)) {
-    value = convert.hsl.rgb(this._get(HSL));
+
+  if ((value = this._.hsv) !== undefined) {
+    value = convert.hsv.rgb(value);
+  } else if ((value = this._.hsl) !== undefined) {
+    value = convert.hsl.rgb(value);
   } else {
-    throw new Error(ERR_NO_DATA);
+    throw new Error('No data to convert');
   }
 
-  this._set(RGB, value);
+  this._.rgb = value;
   return value;
 };
 
 Colr.prototype.toRawRgbObject = function () {
-  var rgb = this.toRawRgbArray();
-  return {r: rgb[0], g: rgb[1], b: rgb[2]};
+  var arr = this.toRawRgbArray();
+  return { r: arr[0], g: arr[1], b: arr[2] };
 };
 
 Colr.prototype.toRgbArray = function () {
-  return this.toRawRgbArray().map(Math.round);
+  var arr = this.toRawRgbArray();
+  return [ Math.round(arr[0]), Math.round(arr[1]), Math.round(arr[2]) ];
 };
 
 Colr.prototype.toRgbObject = function () {
-  var rgb = this.toRgbArray();
-  return {r: rgb[0], g: rgb[1], b: rgb[2]};
+  var arr = this.toRgbArray();
+  return { r: arr[0], g: arr[1], b: arr[2] };
 };
 
 // HSL
 
 Colr.prototype.toRawHslArray = function () {
-  if (this._has(HSL)) {
-    return this._get(HSL);
-  }
+  var cached = this._.hsl;
+  if (cached !== undefined) { return cached; }
 
   var value;
-  if (this._has(HSV)) {
-    value = convert.hsv.hsl(this._get(HSV));
-  } else if (this._has(RGB)) {
-    value = convert.rgb.hsl(this._get(RGB));
+
+  if ((value = this._.hsv) !== undefined) {
+    value = convert.hsv.hsl(value);
+  } else if ((value = this._.rgb) !== undefined) {
+    value = convert.rgb.hsl(value);
   } else {
-    throw new Error(ERR_NO_DATA);
+    throw new Error('No data to convert');
   }
 
-  this._set(HSL, value);
+  this._.hsl = value;
   return value;
 };
 
 Colr.prototype.toRawHslObject = function () {
-  var hsl = this.toRawHslArray();
-  return {h: hsl[0], s: hsl[1], l: hsl[2]};
+  var arr = this.toRawHslArray();
+  return { h: arr[0], s: arr[1], l: arr[2] };
 };
 
 Colr.prototype.toHslArray = function () {
-  return this.toRawHslArray().map(Math.round);
+  var arr = this.toRawHslArray();
+  return [ Math.round(arr[0]), Math.round(arr[1]), Math.round(arr[2]) ];
 };
 
 Colr.prototype.toHslObject = function () {
-  var hsl = this.toHslArray();
-  return {h: hsl[0], s: hsl[1], l: hsl[2]};
+  var arr = this.toHslArray();
+  return { h: arr[0], s: arr[1], l: arr[2] };
 };
-
 
 // HSV
 
 Colr.prototype.toRawHsvArray = function () {
-  if (this._has(HSV)) {
-    return this._get(HSV);
-  }
+  var cached = this._.hsv;
+  if (cached !== undefined) { return cached; }
 
   var value;
-  if (this._has(HSL)) {
-    value = convert.hsl.hsv(this._get(HSL));
-  } else if (this._has(RGB)) {
-    value = convert.rgb.hsv(this._get(RGB));
+
+  if ((value = this._.hsl) !== undefined) {
+    value = convert.hsl.hsv(value);
+  } else if ((value = this._.rgb) !== undefined) {
+    value = convert.rgb.hsv(value);
   } else {
-    throw new Error(ERR_NO_DATA);
+    throw new Error('No data to convert');
   }
 
-  this._set(HSV, value);
+  this._.hsv = value;
   return value;
 };
 
 Colr.prototype.toRawHsvObject = function () {
-  var hsv = this.toRawHsvArray();
-  return {h: hsv[0], s: hsv[1], v: hsv[2]};
+  var arr = this.toRawHsvArray();
+  return { h: arr[0], s: arr[1], v: arr[2] };
 };
 
 Colr.prototype.toHsvArray = function () {
-  return this.toRawHsvArray().map(Math.round);
+  var arr = this.toRawHsvArray();
+  return [ Math.round(arr[0]), Math.round(arr[1]), Math.round(arr[2]) ];
 };
 
 Colr.prototype.toHsvObject = function () {
-  var hsv = this.toHsvArray();
-  return {h: hsv[0], s: hsv[1], v: hsv[2]};
+  var arr = this.toHsvArray();
+  return { h: arr[0], s: arr[1], v: arr[2] };
 };
 
 
 /*
-* MODIFIERS
-*/
+ * MODIFIERS
+ */
 
 Colr.prototype.lighten = function (amount) {
   var hsl = this.toRawHslArray();
-  hsl[2] = clamp(hsl[2] + amount, 100);
-  this._bust();
-  this._set(HSL, hsl);
+  hsl[2] = clampPercentage(hsl[2] + amount);
+  this._ = { hsl: hsl };
   return this;
 };
 
 Colr.prototype.darken = function (amount) {
   var hsl = this.toRawHslArray();
-  hsl[2] = clamp(hsl[2] - amount, 100);
-  this._bust();
-  this._set(HSL, hsl);
+  hsl[2] = clampPercentage(hsl[2] - amount);
+  this._ = { hsl: hsl };
   return this;
 };
 
@@ -337,40 +316,44 @@ Colr.prototype.darken = function (amount) {
 
 Colr.prototype.clone = function () {
   var colr = new Colr();
-  if (this._has(HEX)) { colr._[HEX] = this._[HEX]; }
-  if (this._has(RGB)) { colr._[RGB] = this._[RGB]; }
-  if (this._has(HSV)) { colr._[HSV] = this._[HSV]; }
-  if (this._has(HSL)) { colr._[HSL] = this._[HSL]; }
+  colr._.hex = this._.hex;
+  colr._.rgb = this._.rgb;
+  colr._.hsv = this._.hsv;
+  colr._.hsl = this._.hsl;
+  colr._.grayscale = this._.grayscale;
   return colr;
 };
-
-/*
- * CACHE MANAGEMENT
- */
-
-Colr.prototype._set = function (id, value) {
-  this._[id] = value;
-};
-
-Colr.prototype._has = function (id) {
-  return this._.hasOwnProperty(id);
-};
-
-Colr.prototype._get = function (id) {
-  return this._[id];
-};
-
-Colr.prototype._bust = function () {
-  this._ = {};
-};
-
 
 /*
  * UTILS
  */
 
-function clamp(val, max) {
-  return Math.max(Math.min(val, max), 0);
+function clampPercentage (val) {
+  return Math.max(Math.min(val, 100), 0);
+}
+
+function clampByte (byte) {
+  return Math.max(Math.min(byte, 255), 0);
+}
+
+function clampRgb (r, g, b) {
+  return [
+    Math.max(Math.min(r, 255), 0),
+    Math.max(Math.min(g, 255), 0),
+    Math.max(Math.min(b, 255), 0),
+  ];
+}
+
+function clampHsx (h, s, x) {
+  return [
+    Math.max(Math.min(h, 360), 0),
+    Math.max(Math.min(s, 100), 0),
+    Math.max(Math.min(x, 100), 0),
+  ];
+}
+
+function titleCase (string) {
+  return string[0].toUpperCase() + string.slice(1);
 }
 
 module.exports = Colr;
