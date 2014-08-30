@@ -1495,12 +1495,15 @@ describe('Colr', function () {
   it('should clone a color', function () {
     var a = Colr.fromHex('aaa');
     var b = a.clone();
+    var c = b.clone();
 
     a.lighten(20);
     b.darken(20);
+    c.lighten(30);
 
     compare(a.toHex(), '#dddddd');
     compare(b.toHex(), '#777777');
+    compare(c.toHex(), '#f6f6f6');
   });
 
 

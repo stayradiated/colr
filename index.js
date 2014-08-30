@@ -317,10 +317,18 @@ Colr.prototype.darken = function (amount) {
 Colr.prototype.clone = function () {
   var colr = new Colr();
   colr._.hex = this._.hex;
-  colr._.rgb = this._.rgb;
-  colr._.hsv = this._.hsv;
-  colr._.hsl = this._.hsl;
   colr._.grayscale = this._.grayscale;
+
+  if (this._.rgb !== undefined) {
+    colr._.rgb = this._.rgb.slice(0);
+  }
+  if (this._.hsv !== undefined) {
+    colr._.hsv = this._.hsv.slice(0);
+  }
+  if (this._.hsl !== undefined) {
+    colr._.hsl = this._.hsl.slice(0);
+  }
+
   return colr;
 };
 
