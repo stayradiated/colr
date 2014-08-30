@@ -115,45 +115,45 @@ b.toHex(); // '#000000'
 ## Benchmarks
 
 ```
-
 # FromHsv -> ToRgb
-colr x 4,692,968 ops/sec ±1.03% (101 runs sampled)
-tinycolor x 924,802 ops/sec ±1.52% (93 runs sampled)
-color x 308,460 ops/sec ±1.53% (94 runs sampled)
+colr x 4,602,679 ops/sec ±0.43% (99 runs sampled)
+color x 320,733 ops/sec ±0.49% (93 runs sampled)
+tinycolor x 1,033,573 ops/sec ±0.28% (102 runs sampled)
 Fastest is colr
 
 # FromHex -> Lighten -> ToHex
-colr x 1,249,627 ops/sec ±1.28% (98 runs sampled)
-color x 57,318 ops/sec ±1.33% (96 runs sampled)
-tinycolor x 76,323 ops/sec ±1.36% (95 runs sampled)
+colr x 1,360,752 ops/sec ±0.22% (103 runs sampled)
+color x 60,933 ops/sec ±0.37% (101 runs sampled)
+tinycolor x 79,699 ops/sec ±0.11% (102 runs sampled)
 Fastest is colr
 
 # FromHex -> Lighten -> Darken -> ToHex
-colr x 1,231,571 ops/sec ±1.65% (92 runs sampled)
-color x 42,823 ops/sec ±1.46% (95 runs sampled)
-tinycolor x 54,119 ops/sec ±1.47% (93 runs sampled)
+colr x 1,342,473 ops/sec ±0.36% (101 runs sampled)
+color x 48,162 ops/sec ±0.24% (101 runs sampled)
+tinycolor x 55,313 ops/sec ±0.11% (102 runs sampled)
 Fastest is colr
 
 # FromHex -> ToHex
-colr x 2,486,170 ops/sec ±1.42% (98 runs sampled)
-color x 96,604 ops/sec ±1.04% (96 runs sampled)
-tinycolor x 198,750 ops/sec ±1.22% (96 runs sampled)
+colr x 2,208,379 ops/sec ±0.20% (103 runs sampled)
+color x 98,068 ops/sec ±0.59% (98 runs sampled)
+tinycolor x 200,300 ops/sec ±0.08% (101 runs sampled)
 Fastest is colr
 
 # FromHsv -> ToRgb -> ToHex
-colr x 1,868,850 ops/sec ±1.54% (93 runs sampled)
-color x 149,191 ops/sec ±1.63% (93 runs sampled)
-tinycolor x 487,203 ops/sec ±1.88% (91 runs sampled)
+colr x 1,718,402 ops/sec ±0.47% (97 runs sampled)
+color x 159,986 ops/sec ±0.42% (100 runs sampled)
+tinycolor x 571,714 ops/sec ±0.45% (101 runs sampled)
 Fastest is colr
 
 # FromHsv -> ToHsl
-colr x 4,242,921 ops/sec ±1.41% (96 runs sampled)
-color x 191,675 ops/sec ±1.52% (97 runs sampled)
-tinycolor x 397,635 ops/sec ±1.86% (91 runs sampled)
+colr x 4,421,173 ops/sec ±0.03% (100 runs sampled)
+color x 206,278 ops/sec ±0.43% (100 runs sampled)
+tinycolor x 407,639 ops/sec ±0.88% (96 runs sampled)
 Fastest is colr
 
 # FromHsl -> ToHsv
-colr x 4,192,546 ops/sec ±1.26% (94 runs sampled)
-color x 180,318 ops/sec ±1.60% (93 runs sampled)
-tinycolor x 422,543 ops/sec ±1.52% (92 runs sampled)
+colr x 4,294,678 ops/sec ±0.65% (101 runs sampled)
+color x 188,744 ops/sec ±0.08% (102 runs sampled)
+tinycolor x 447,867 ops/sec ±0.52% (100 runs sampled)
 Fastest is colr
+```

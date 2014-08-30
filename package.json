@@ -4,7 +4,8 @@
   "description": "Fast and simple color conversion",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec -b test"
+    "test": "mocha -R spec -b test",
+    "coverage": "mocha --require blanket -R html-cov > coverage.html"
   },
   "repository": {
     "type": "git",
@@ -30,11 +31,17 @@
   },
   "homepage": "https://github.com/stayradiated/colr",
   "dependencies": {
-    "colr-convert": "^1.0.3"
+    "colr-convert": "^1.0.4"
   },
   "devDependencies": {
     "benchmark": "^1.0.0",
+    "blanket": "^1.1.6",
     "color": "^0.7.1",
     "tinycolor2": "^1.0.0"
+  },
+  "config": {
+    "blanket": {
+      "pattern": "//(colr\/index.js|colr-convert\/index.js)/"
+    }
   }
 }
