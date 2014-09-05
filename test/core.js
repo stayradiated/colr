@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var Colr = require('./index');
+var Colr = require('../index');
 
 describe('Colr', function () {
 
@@ -151,12 +151,12 @@ describe('Colr', function () {
       },
 
       alter: {
-        lighten: [
+        lighter: [
           [50, '#000000', '#808080'],
           [50, '#aabbcc', '#ffffff'],
           [50, '#332211', '#d0a273'],
         ],
-        darken: [
+        darker: [
           [50, '#FFFFFF', '#808080'],
           [50, '#aabbcc', '#2d3c4a'],
           [50, '#332211', '#000000'],
@@ -1497,9 +1497,9 @@ describe('Colr', function () {
     var b = a.clone();
     var c = b.clone();
 
-    a.lighten(20);
-    b.darken(20);
-    c.lighten(30);
+    a.lighter(20);
+    b.darker(20);
+    c.lighter(30);
 
     compare(a.toHex(), '#dddddd');
     compare(b.toHex(), '#777777');

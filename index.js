@@ -296,14 +296,14 @@ Colr.prototype.toHsvObject = function () {
  * MODIFIERS
  */
 
-Colr.prototype.lighten = function (amount) {
+Colr.prototype.lighter = function (amount) {
   var hsl = this.toRawHslArray();
   hsl[2] = clampPercentage(hsl[2] + amount);
   this._ = { hsl: hsl };
   return this;
 };
 
-Colr.prototype.darken = function (amount) {
+Colr.prototype.darker = function (amount) {
   var hsl = this.toRawHslArray();
   hsl[2] = clampPercentage(hsl[2] - amount);
   this._ = { hsl: hsl };
