@@ -5,6 +5,7 @@ var Benchmark = require('benchmark');
 var Colr = require('./index');
 var color = require('color');
 var tinycolor = require('tinycolor2');
+var chroma = require('chroma-js'); 
 
 var suite = function (name, tests) {
   console.log('\n#', name);
@@ -27,7 +28,9 @@ var suite = function (name, tests) {
 
 var hex = '#bada55';
 var hsv = {h: 180, s:50, v:50};
+var hsvArray = [180, 50, 50];
 var hsl = {h: 180, s:50, l:50};
+var hslArray = [180, 50, 50];
 
 suite('FromHsv -> ToRgb', {
   colr: function () {
@@ -39,30 +42,40 @@ suite('FromHsv -> ToRgb', {
   tinycolor: function () {
     tinycolor(hsv).toRgb();
   },
+  chroma: function () {
+    // not exactly fair because chroma doesn't support objects like {h, s,v}
+    chroma(hsvArray, 'hsv').rgb();
+  },
 });
 
 suite('FromHex -> Lighten -> ToHex', {
   colr: function () {
-    Colr.fromHex(hex).lighten(20).toHex();
+    Colr.fromHex(hex).lighter(20).toHex();
   },
   color: function () {
     color(hex).lighten(0.2).hexString();
   },
   tinycolor: function () {
     tinycolor(hex).lighten(20).toHexString();
-  }
+  },
+  chroma: function () {
+    chroma(hex).brighten(20).hex();
+  },
 });
 
 suite('FromHex -> Lighten -> Darken -> ToHex', {
   colr: function ()  {
-    Colr.fromHex(hex).lighten(10).darken(20).toHex();
+    Colr.fromHex(hex).lighter(10).darker(20).toHex();
   },
   color: function () {
     color(hex).lighten(0.1).darken(0.2).hexString();
   },
   tinycolor: function () {
     tinycolor(hex).lighten(10).darken(20).toHexString();
-  }
+  },
+  chroma: function () {
+    chroma(hex).brighten(20).darken(20).hex();
+  },
 });
 
 suite('FromHex -> ToHex', {
@@ -75,6 +88,9 @@ suite('FromHex -> ToHex', {
   tinycolor: function () {
     tinycolor(hex).toHexString();
   },
+  chroma: function () {
+    chroma(hex).hex();
+  }
 });
 
 suite('FromHsv -> ToRgb -> ToHex', {
@@ -93,6 +109,11 @@ suite('FromHsv -> ToRgb -> ToHex', {
     obj.toRgb();
     obj.toHexString();
   },
+  chroma: function () {
+    var obj = chroma(hsvArray, 'hsv');
+    obj.rgb();
+    obj.hex();
+  },
 });
 
 suite('FromHsv -> ToHsl', {
@@ -104,7 +125,10 @@ suite('FromHsv -> ToHsl', {
   },
   tinycolor: function() {
     tinycolor(hsv).toHsv();
-  }
+  },
+  chroma: function () {
+    chroma(hsvArray, 'hsv').hsl();
+  },
 });
 
 suite('FromHsl -> ToHsv', {
@@ -116,5 +140,8 @@ suite('FromHsl -> ToHsv', {
   },
   tinycolor: function() {
     tinycolor(hsl).toHsl();
-  }
+  },
+  chroma: function () {
+    chroma(hslArray, 'hsl').hsv();
+  },
 });

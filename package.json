@@ -4,7 +4,7 @@
   "description": "Fast and simple color conversion",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec -b test",
+    "test": "mocha -R spec test",
     "coverage": "mocha --require blanket -R html-cov > coverage.html"
   },
   "repository": {
@@ -36,12 +36,13 @@
   "devDependencies": {
     "benchmark": "^1.0.0",
     "blanket": "^1.1.6",
+    "chroma-js": "^0.5.9",
     "color": "^0.7.1",
     "tinycolor2": "^1.0.0"
   },
   "config": {
     "blanket": {
-      "pattern": "//(colr\/index.js|colr-convert\/index.js)/"
+      "pattern": "//(colr/index.js|colr-convert/index.js)/"
     }
   }
 }
