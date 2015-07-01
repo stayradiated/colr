@@ -1,6 +1,6 @@
 {
   "name": "colr",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Fast and simple color conversion",
   "main": "index.js",
   "scripts": {
@@ -35,14 +35,31 @@
   },
   "devDependencies": {
     "benchmark": "^1.0.0",
-    "blanket": "^1.1.6",
-    "chroma-js": "^0.5.9",
-    "color": "^0.7.1",
-    "tinycolor2": "^1.0.0"
+    "blanket": "^1.1.7",
+    "chroma-js": "^0.7.8",
+    "color": "^0.9.0",
+    "tinycolor2": "^1.1.2"
   },
   "config": {
     "blanket": {
       "pattern": "//(colr/index.js|colr-convert/index.js)/"
+    }
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true,
+      "mocha": true
+    },
+    "plugins": [ "react" ],
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "rules": {
+      "quotes": "single",
+      "comma-dangle": "always-multiline",
+      "no-multi-spaces": 0,
+      "key-spacing": 0
     }
   }
 }

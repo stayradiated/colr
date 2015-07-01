@@ -5,9 +5,9 @@ var Benchmark = require('benchmark');
 var Colr = require('./index');
 var color = require('color');
 var tinycolor = require('tinycolor2');
-var chroma = require('chroma-js'); 
+var chroma = require('chroma-js');
 
-var suite = function (name, tests) {
+var createSuite = function (name, tests) {
   console.log('\n#', name);
 
   var suite = new Benchmark.Suite();
@@ -32,7 +32,7 @@ var hsvArray = [180, 50, 50];
 var hsl = {h: 180, s:50, l:50};
 var hslArray = [180, 50, 50];
 
-suite('FromHsv -> ToRgb', {
+createSuite('FromHsv -> ToRgb', {
   colr: function () {
     Colr.fromHsvObject(hsv).toRgbObject();
   },
@@ -48,9 +48,9 @@ suite('FromHsv -> ToRgb', {
   },
 });
 
-suite('FromHex -> Lighten -> ToHex', {
+createSuite('FromHex -> Lighten -> ToHex', {
   colr: function () {
-    Colr.fromHex(hex).lighter(20).toHex();
+    Colr.fromHex(hex).lighten(20).toHex();
   },
   color: function () {
     color(hex).lighten(0.2).hexString();
@@ -63,9 +63,9 @@ suite('FromHex -> Lighten -> ToHex', {
   },
 });
 
-suite('FromHex -> Lighten -> Darken -> ToHex', {
+createSuite('FromHex -> Lighten -> Darken -> ToHex', {
   colr: function ()  {
-    Colr.fromHex(hex).lighter(10).darker(20).toHex();
+    Colr.fromHex(hex).lighten(10).darken(20).toHex();
   },
   color: function () {
     color(hex).lighten(0.1).darken(0.2).hexString();
@@ -78,7 +78,7 @@ suite('FromHex -> Lighten -> Darken -> ToHex', {
   },
 });
 
-suite('FromHex -> ToHex', {
+createSuite('FromHex -> ToHex', {
   colr: function () {
     Colr.fromHex(hex).toHex();
   },
@@ -93,7 +93,7 @@ suite('FromHex -> ToHex', {
   }
 });
 
-suite('FromHsv -> ToRgb -> ToHex', {
+createSuite('FromHsv -> ToRgb -> ToHex', {
   colr: function () {
     var obj = Colr.fromHsvObject(hsv);
     obj.toRgbObject();
@@ -116,7 +116,7 @@ suite('FromHsv -> ToRgb -> ToHex', {
   },
 });
 
-suite('FromHsv -> ToHsl', {
+createSuite('FromHsv -> ToHsl', {
   colr: function () {
     Colr.fromHsvObject(hsv).toHslObject();
   },
@@ -131,7 +131,7 @@ suite('FromHsv -> ToHsl', {
   },
 });
 
-suite('FromHsl -> ToHsv', {
+createSuite('FromHsl -> ToHsv', {
   colr: function () {
     Colr.fromHslObject(hsl).toHsvObject();
   },
