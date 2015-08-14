@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec test",
-    "coverage": "mocha --require blanket -R html-cov > coverage.html"
+    "coverage": "mocha --require blanket -R html-cov > coverage.html",
+    "webpack": "webpack -p"
   },
   "repository": {
     "type": "git",
@@ -36,9 +37,10 @@
   "devDependencies": {
     "benchmark": "^1.0.0",
     "blanket": "^1.1.7",
-    "chroma-js": "^0.7.8",
-    "color": "^0.9.0",
-    "tinycolor2": "^1.1.2"
+    "chroma-js": "^1.1.1",
+    "color": "^0.10.1",
+    "tinycolor2": "^1.1.2",
+    "webpack": "^1.11.0"
   },
   "config": {
     "blanket": {
@@ -51,7 +53,9 @@
       "node": true,
       "mocha": true
     },
-    "plugins": [ "react" ],
+    "plugins": [
+      "react"
+    ],
     "ecmaFeatures": {
       "jsx": true
     },
