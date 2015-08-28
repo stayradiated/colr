@@ -1,0 +1,27 @@
+{
+  "name": "colr",
+  "main": "colr.min.js",
+  "version": "1.2.2",
+  "homepage": "https://github.com/stayradiated/colr",
+  "authors": [
+    "George Czabania <george@czabania.com>"
+  ],
+  "description": "Fast and simple color conversion",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "color",
+    "convert",
+    "converstion",
+    "grayscale",
+    "hex",
+    "rgb",
+    "hsv",
+    "hsl",
+    "hsb",
+    "lighten",
+    "darken"
+  ],
+  "license": "MIT"
+}
