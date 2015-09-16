@@ -61,6 +61,13 @@ colr.fromHsvObject({h:30, s:80, v:20});
 colr.fromGrayscale(128);
 ```
 
+### Hsl/Hsv ranges
+These are not 0 to 255 but rather:
+```
+Hue:              [0, 360]
+Saturation:       [0, 100]
+Lightness/Value:  [0, 100]
+```
 ### Exporters
 
 Convert the color to another format
