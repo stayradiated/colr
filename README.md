@@ -93,10 +93,10 @@ colr.toGrayscale(); // 193.27
 All methods return the `colr` instance and can be chained.
 
 ```javascript
-var colr = Colr.fromHex('000').lighter(20);
+var colr = Colr.fromHex('000').lighten(20);
 colr.toHex(); // "#333333"
 
-var colr = Colr.fromHex('FFF').darker(20);
+var colr = Colr.fromHex('FFF').darken(20);
 colr.toHex(); // "#CCCCCC"
 ```
 
@@ -106,7 +106,7 @@ colr.toHex(); // "#CCCCCC"
 var a = Colr.fromHex('#000');
 var b = a.clone();
 
-a.lighter(20);
+a.lighten(20);
 
 a.toHex(); // '#333333'
 b.toHex(); // '#000000'
