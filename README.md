@@ -85,12 +85,12 @@ colr.toRawRgbObject(); // {r:186, g:218, b:85}
 colr.toHslArray(); // [74, 64, 59]
 colr.toHslObject(); // {h:74, s:64, l:59}
 colr.toRawHslArray(); // {74.4360902255639, 64.25120772946859, 59.411764705882355]
-colr.toRawHslObject(); // {r:74.4360902255639, g:64.25120772946859, b:59.411764705882355}
+colr.toRawHslObject(); // {h:74.4360902255639, s:64.25120772946859, l:59.411764705882355}
 
 colr.toHsvArray(); // [74, 61, 85]
-colr.toHsvObject(); //{h: 74, s: 61, l: 85}
+colr.toHsvObject(); //{h: 74, s: 61, v: 85}
 colr.toRawHsvArray(); // [74.4360902255639, 61.00917431192661, 85.49019607843137]
-colr.toRawHsvObject(); // {r:74.4360902255639, g:61.00917431192661, b:85.49019607843137}
+colr.toRawHsvObject(); // {h:74.4360902255639, s:61.00917431192661, v:85.49019607843137}
 
 colr.toGrayscale(); // 193.27
 ```
